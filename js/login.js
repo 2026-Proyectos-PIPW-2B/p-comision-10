@@ -26,9 +26,11 @@ window.addEventListener("DOMContentLoaded", function () {
     console.log("tema inicial:", temaActual);
 
     const botonActivo = document.querySelector(`[data-bs-theme-value="${temaActual}"]`);
-    const iconoActivo = botonActivo.querySelector("use").getAttribute("href");
-    iconoPrincipal.setAttribute("href", iconoActivo);
-    console.log("seteadooo!!!");
+    if (botonActivo) {
+        const iconoActivo = botonActivo.querySelector("use").getAttribute("href");
+        iconoPrincipal.setAttribute("href", iconoActivo);
+        console.log("seteadooo!!!");
+    }
 });
 
 function obtenerTemaPreferido() {
@@ -53,7 +55,32 @@ function aplicarTema(tema) {
     }
 
     document.documentElement.setAttribute("data-bs-theme", temaReal);
-    console.log("Atributo data-bs-theme cambiado a:", temaReal);
 }
 
 aplicarTema(obtenerTemaPreferido());
+
+
+// simulacion de un login exitoso y volvemos apra atras
+window.addEventListener("DOMContentLoaded", function () {
+    // Buscamos el formulario de login en el HTML
+    const formulario = document.querySelector("form");
+
+    if (formulario) {
+        formulario.addEventListener("submit", function (evento) {
+            evento.preventDefault();
+            const email = document.getElementById("floatingInput").value;
+            const password = document.getElementById("floatingPassword").value;
+            console.log(email, password)
+            console.log("Logueando al usuario..."   , email);
+            localStorage.setItem("usuario_logueado", "true");
+            localStorage.setItem("email_usuario", email);
+            alert("¡Bienvenido...!");
+
+            if (document.referrer) {
+                window.history.back();
+            } else {
+                window.location.href = "index.html";
+            }
+        });
+    }
+});
