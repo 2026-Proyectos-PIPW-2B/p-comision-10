@@ -21,7 +21,7 @@
         />
         <link rel="stylesheet" href="css/login.css" />
     </head>
-    <body class="d-flex align-items-center py-4 bg-body-tertiary">
+    <body class="d-flex align-items-center py-4 bg-dark-subtle">
         <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
             <symbol id="circle-half" viewBox="0 0 16 16">
                 <path
@@ -115,6 +115,7 @@
                         placeholder="name@example.com"
                     />
                     <label for="floatingInput">email</label>
+                    
                 </div>
                 <div class="form-floating">
                     <input
@@ -126,16 +127,18 @@
                     <label for="floatingPassword">password</label>
                 </div>
 
-                <div class="form-check text-start my-3">
+                <div class="d-flex gap-3 text-start my-3">
                     <input
                         class="form-check-input"
                         type="checkbox"
                         value="remember-me"
                         id="checkDefault"
                     />
-                    <label class="form-check-label" for="checkDefault"
-                        >recordame</label
-                    >
+                    <div class="d-flex justify-content-around gap-5">
+                        <label class="form-check-label" for="checkDefault"
+                            >recordame</label
+                        >
+                    </div>
                 </div>
 
                 <button
@@ -144,6 +147,13 @@
                 >
                     entrar
                 </button>
+                <div class="mt-4">
+                    <a
+                        class="link-dark link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
+                        href="registrate.html"
+                        >No tengo cuenta y tengo hambre</a
+                    >
+                </div>
                 <p class="mt-5 mb-3 text-body-secondary">&copy; 2026 PIWP</p>
             </form>
         </main>
