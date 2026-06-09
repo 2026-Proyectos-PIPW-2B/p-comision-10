@@ -70,16 +70,19 @@ window.addEventListener("DOMContentLoaded", function () {
             evento.preventDefault();
             const email = document.getElementById("floatingInput").value;
             const password = document.getElementById("floatingPassword").value;
-            console.log(email, password)
-            console.log("Logueando al usuario..."   , email);
-            localStorage.setItem("usuario_logueado", "true");
-            localStorage.setItem("email_usuario", email);
-            alert("¡Bienvenido...!");
-
-            if (document.referrer) {
-                window.history.back();
+            console.log(email === localStorage.getItem("email"), localStorage.getItem("email"))
+            console.log(password === localStorage.getItem("password"), localStorage.getItem("password"))
+            if (email === localStorage.getItem("email") && password === localStorage.getItem("password")) {
+                alert("¡Bienvenido... al paraiso!");
+                localStorage.setItem("usuario_logueado", "true");
+                if (document.referrer) {
+                    window.history.back();
+                } else {
+                    window.location.href = "index.html";
+                }
             } else {
-                window.location.href = "index.html";
+                localStorage.setItem("usuario_logueado", "false");
+                alert("¡No no, le pifiaste!");
             }
         });
     }
