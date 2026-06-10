@@ -70,10 +70,15 @@ window.addEventListener("DOMContentLoaded", function () {
             evento.preventDefault();
             const email = document.getElementById("floatingInput").value;
             const password = document.getElementById("floatingPassword").value;
+            const inputEmail = document.getElementById("floatingInput")
+            const inputPassword = document.getElementById("floatingPassword")
             console.log(email === localStorage.getItem("email"), localStorage.getItem("email"))
             console.log(password === localStorage.getItem("password"), localStorage.getItem("password"))
+            limpiarEstados()
+            validarDatos(email, password, inputEmail, inputPassword)
             if (email === localStorage.getItem("email") && password === localStorage.getItem("password")) {
                 alert("¡Bienvenido... al paraiso!");
+                limpiarEstados()
                 localStorage.setItem("usuario_logueado", "true");
                 if (document.referrer) {
                     window.history.back();
@@ -87,3 +92,32 @@ window.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+function limpiarEstados() {
+    const inputs = document.querySelectorAll(".form-check-input, .form-select, .form-control")
+
+    for (const input of inputs) {
+        input.classList.remove("is-invalid")
+        input.classList.remove("is-valid")
+    }
+}
+
+function validarDatos(email, password, inputEmail, inputPassword) {
+
+    validarEmail(inputEmail, email)
+    validarPassword(inputPassword, password)
+}
+
+function validarEmail(inputEmail, email) {
+
+    if (email.length <= 0) {
+        inputEmail.classList.add("is-invalid")
+    }
+}
+
+function validarPassword(inputPassword, password) {
+
+    if (password.length <= 0) {
+        inputPassword.classList.add("is-invalid")
+    } 
+}
