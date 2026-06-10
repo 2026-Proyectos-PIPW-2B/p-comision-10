@@ -110,14 +110,18 @@ function validarDatos(email, password, inputEmail, inputPassword) {
 
 function validarEmail(inputEmail, email) {
 
-    if (email.length <= 0) {
+    if (email !== localStorage.getItem("email")) {
         inputEmail.classList.add("is-invalid")
+    } else if(email === localStorage.getItem("email")){
+        inputEmail.classList.add("is-valid")
     }
 }
 
 function validarPassword(inputPassword, password) {
 
-    if (password.length <= 0) {
+    if (password !== localStorage.getItem("password")) {
         inputPassword.classList.add("is-invalid")
-    } 
+    } else if (password === localStorage.getItem("password")){
+        inputPassword.classList.add("is-valid")
+    }
 }
