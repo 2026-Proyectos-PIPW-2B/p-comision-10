@@ -1,37 +1,22 @@
-const usaurios_en_ls = "usuarios";
+import { existeUsuario, agregarUsuario } from "./modulos/gestorDeUsuarios.js"
 
-const usuariosDeEjemplo = [
-    {
-        id: "u1",
-        nombreCompleto: "admin",
-        direccion: "calle falsa 123",
-        telefono: "2914395390",
-        email: "admin@piwp.com",
-        password: "1234",
-        rol: "admin",
-    },
-    {
-        id: "u2",
-        nombreCompleto: "cliente",
-        direccion: "inglaterra 634",
-        telefono: "291439530",
-        email: "cliente@piwp.com",
-        password: "1234",
-        rol: "cliente",
-    },
-];
+window.addEventListener("DOMContentLoaded", inicializarRegistrate)
 
-window.addEventListener("DOMContentLoaded", function () {
-    console.log("ding dom dom dom - registrate");
-    inicializarUsuarios();
+function inicializarRegistrate() {
+    agregarListener()
+}
 
-    const formulario = document.querySelector("form");
+function agregarListener(){
+    agregarListenerFormulario()
+}
+
+function agregarListenerFormulario(){
+    const formulario = document.getElementById("formularioRegistro");
 
     if (formulario) {
         formulario.addEventListener("submit", function (evento) {
             evento.preventDefault();
-            console.log("submit de registrate");
-
+            
             const nombreCompleto = document.getElementById("floatingNombreCompleto").value.trim();
             const direccion = document.getElementById("floatingDireccion").value.trim();
             const telefono = document.getElementById("floatingTelefono").value.trim();
@@ -59,84 +44,23 @@ window.addEventListener("DOMContentLoaded", function () {
             );
 
             if (resultadoValidacion.resultado === true) {
-                const usuarios = obtenerUsuarios();
-                const existeUsuario = usuarios.find(function (usuario) {
-                    return usuario.email === email;
-                });
-
-                if (existeUsuario) {
-                    console.log("ya existe un usuario con ese email");
+                
+                if (existeUsuario(email)) {
                     alert("Ya existe un usuario con ese email");
                     inputEmail.classList.add("is-invalid");
                     return;
                 }
 
-                const nuevoUsuario = {
-                    id: crearIdUsuario(),
-                    nombreCompleto,
-                    direccion,
-                    telefono,
-                    email,
-                    password,
-                    rol: "cliente",
-                };
-
-                console.log("guardando usuario nuevo:", nuevoUsuario);
-                usuarios.push(nuevoUsuario);
-                guardarUsuarios(usuarios);
-
+                agregarUsuario(nombreCompleto, direccion, telefono, email, password, "usuario")
                 limpiarEstados();
                 alert(`${nombreCompleto}, has sido Registrado!!`);
 
-                if (document.referrer) {
-                    window.history.back();
-                } else {
-                    window.location.href = "login.html";
-                }
+                window.location.href = "login.html";
+
+                
             }
         });
     }
-});
-
-function inicializarUsuarios() {
-    console.log("inicializando usuarios...");
-    const usuariosGuardados = obtenerUsuarios();
-    console.log("usuarios guardados:", usuariosGuardados);
-
-    if (usuariosGuardados.length === 0) {
-        console.log("no habia usuarios, cargando ejemplos");
-        guardarUsuarios(usuariosDeEjemplo);
-    }
-}
-
-function obtenerUsuarios() {
-    console.log("leyendo usuarios desde ls");
-    const usuarios = localStorage.getItem(usaurios_en_ls);
-
-    if (!usuarios) {
-        console.log("no existe la clave de usuarios todavia");
-        return [];
-    }
-
-    try {
-        const usuariosParseados = JSON.parse(usuarios);
-        console.log("usuarios parseados:", usuariosParseados);
-        return Array.isArray(usuariosParseados) ? usuariosParseados : [];
-    } catch (error) {
-        console.error("No se pudieron leer los usuarios:", error);
-        return [];
-    }
-}
-
-function guardarUsuarios(usuarios) {
-    console.log("guardando usuarios en ls:", usuarios);
-    localStorage.setItem(usaurios_en_ls, JSON.stringify(usuarios));
-}
-
-function crearIdUsuario() {
-    const idNuevo = `u${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
-    console.log("id nuevo de usuario:", idNuevo);
-    return idNuevo;
 }
 
 function limpiarEstados() {
