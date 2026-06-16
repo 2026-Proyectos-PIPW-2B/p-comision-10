@@ -1,6 +1,9 @@
+const usaurios_en_ls = "usuarios";
+
 // totalmente robado jajaja
 window.addEventListener("DOMContentLoaded", function () {
     console.log("ding dom dom dom");
+    inicializarUsuarios();
 
     const iconoPrincipal = document.querySelector("#bd-theme use");
     const botonesOpciones = document.querySelectorAll("[data-bs-theme-value]");
@@ -59,27 +62,33 @@ function aplicarTema(tema) {
 
 aplicarTema(obtenerTemaPreferido());
 
-
-// simulacion de un login exitoso y volvemos apra atras
 window.addEventListener("DOMContentLoaded", function () {
-    // Buscamos el formulario de login en el HTML
+    console.log("arranco login...");
     const formulario = document.querySelector("form");
 
     if (formulario) {
         formulario.addEventListener("submit", function (evento) {
             evento.preventDefault();
-            const email = document.getElementById("floatingInput").value;
-            const password = document.getElementById("floatingPassword").value;
-            const inputEmail = document.getElementById("floatingInput")
-            const inputPassword = document.getElementById("floatingPassword")
-            console.log(email === localStorage.getItem("email"), localStorage.getItem("email"))
-            console.log(password === localStorage.getItem("password"), localStorage.getItem("password"))
-            limpiarEstados()
-            validarDatos(email, password, inputEmail, inputPassword)
-            if (email === localStorage.getItem("email") && password === localStorage.getItem("password")) {
+            console.log("submit de login");
+
+            const email = document.getElementById("floatingInput").value.trim();
+            const password = document.getElementById("floatingPassword").value.trim();
+            const inputEmail = document.getElementById("floatingInput");
+            const inputPassword = document.getElementById("floatingPassword");
+
+            console.log("credenciales que llegaron:", email, password);
+            limpiarEstados();
+            validarDatos(email, password, inputEmail, inputPassword);
+
+            const usuarioEncontrado = buscarUsuarioPorCredenciales(email, password);
+            console.log("usuario encontrado:", usuarioEncontrado);
+
+            if (usuarioEncontrado) {
                 alert("¡Bienvenido... al paraiso!");
-                limpiarEstados()
+                limpiarEstados();
                 localStorage.setItem("usuario_logueado", "true");
+                localStorage.setItem("usuario_activo", JSON.stringify(usuarioEncontrado));
+
                 if (document.referrer) {
                     window.history.back();
                 } else {
@@ -93,35 +102,91 @@ window.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+function obtenerUsuarios() {
+    console.log("leyendo usuarios para login");
+    const usuarios = localStorage.getItem(usaurios_en_ls);
+
+    if (!usuarios) {
+        console.log("no existe la clave usuarios todavia");
+        return [];
+    }
+
+    try {
+        const usuariosParseados = JSON.parse(usuarios);
+        console.log("usuarios parseados:", usuariosParseados);
+        return Array.isArray(usuariosParseados) ? usuariosParseados : [];
+    } catch (error) {
+        console.error("No se pudieron leer los usuarios:", error);
+        return [];
+    }
+}
+
+function inicializarUsuarios() {
+    const usuariosGuardados = obtenerUsuarios();
+    console.log("usuarios en login:", usuariosGuardados);
+
+    if (usuariosGuardados.length === 0) {
+        console.log("no habia usuarios, cargando ejemplos");
+        localStorage.setItem(usaurios_en_ls, JSON.stringify([
+            {
+                id: "u1",
+                nombreCompleto: "admin",
+                direccion: "calle falsa 123",
+                telefono: "2914395390",
+                email: "admin@piwp.com",
+                password: "1234",
+                rol: "admin",
+            },
+            {
+                id: "u2",
+                nombreCompleto: "cliente",
+                direccion: "inglaterra 634",
+                telefono: "291439530",
+                email: "cliente@piwp.com",
+                password: "1234",
+                rol: "cliente",
+            },
+        ]));
+    }
+}
+
+function buscarUsuarioPorCredenciales(email, password) {
+    const usuarios = obtenerUsuarios();
+    return usuarios.find(function (usuario) {
+        return usuario.email === email && usuario.password === password;
+    });
+}
+
 function limpiarEstados() {
-    const inputs = document.querySelectorAll(".form-check-input, .form-select, .form-control")
+    const inputs = document.querySelectorAll(".form-check-input, .form-select, .form-control");
 
     for (const input of inputs) {
-        input.classList.remove("is-invalid")
-        input.classList.remove("is-valid")
+        input.classList.remove("is-invalid");
+        input.classList.remove("is-valid");
     }
 }
 
 function validarDatos(email, password, inputEmail, inputPassword) {
-
-    validarEmail(inputEmail, email)
-    validarPassword(inputPassword, password)
+    validarEmail(inputEmail, email);
+    validarPassword(inputPassword, password);
 }
 
 function validarEmail(inputEmail, email) {
+    const usuarioEncontrado = obtenerUsuarios().some(function (usuario) {
+        return usuario.email === email;
+    });
 
-    if (email !== localStorage.getItem("email")) {
-        inputEmail.classList.add("is-invalid")
-    } else if(email === localStorage.getItem("email")){
-        inputEmail.classList.add("is-valid")
+    if (!usuarioEncontrado) {
+        inputEmail.classList.add("is-invalid");
+    } else {
+        inputEmail.classList.add("is-valid");
     }
 }
 
 function validarPassword(inputPassword, password) {
-
-    if (password !== localStorage.getItem("password")) {
-        inputPassword.classList.add("is-invalid")
-    } else if (password === localStorage.getItem("password")){
-        inputPassword.classList.add("is-valid")
+    if (password.length <= 3) {
+        inputPassword.classList.add("is-invalid");
+    } else {
+        inputPassword.classList.add("is-valid");
     }
 }

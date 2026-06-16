@@ -1,51 +1,115 @@
+const usaurios_en_ls = "usuarios";
+
 window.addEventListener("DOMContentLoaded", function () {
-    const botonConfirmarEmail = document.getElementById("botonConfirmarEmail")
+    console.log("ding dom dom dom - recuperar contraseña");
+    inicializarUsuarios();
 
-    botonConfirmarEmail.addEventListener("click", function () {
-        const email = document.getElementById("floatingInput").value;
-        const divDelInputContraseña = document.getElementById("divDelInputContraseña");
-        const botonRecuperarContraseña = document.getElementById("botonRecuperarContraseña");
-        //const floatingPassword = document.getElementById("floatingPassword").value;
+    const form = document.querySelector("form");
+    const botonConfirmarEmail = document.getElementById("botonConfirmarEmail");
+    const botonRecuperarContraseña = document.getElementById("botonRecuperarContraseña");
+    const divDelInputContraseña = document.getElementById("divDelInputContraseña");
 
-        let resultadoValidacion = {
-            resultado: true,
-        }
+    if (!form) {
+        return;
+    }
 
-        //aparece el input contraseña y el boton recuperar contraseña y desaparece el boton confirmar email
-        if (email === localStorage.getItem("email")) {
-            botonConfirmarEmail.classList.add("d-none")
-            divDelInputContraseña.classList.remove("d-none")
-            botonRecuperarContraseña.classList.remove("d-none")
+    let usuarioEncontrado = null;
 
-            //ve si la contraseña es valida o no
-            if (password.length <= 3) {
-                resultadoValidacion.resultado = false
-                inputPassword.classList.add("is-invalid")
+    form.addEventListener("submit", function (evento) {
+        evento.preventDefault();
+        console.log("submit de recuperar contraseña");
+
+        const email = document.getElementById("floatingInput").value.trim();
+        const password = document.getElementById("floatingPassword").value.trim();
+
+        if (!usuarioEncontrado) {
+            usuarioEncontrado = buscarUsuarioPorEmail(email);
+            console.log("usuario buscado por email:", usuarioEncontrado);
+
+            if (usuarioEncontrado) {
+                botonConfirmarEmail.classList.add("d-none");
+                divDelInputContraseña.classList.remove("d-none");
+                botonRecuperarContraseña.classList.remove("d-none");
             } else {
-                resultadoValidacion.resultado = true
-                inputPassword.classList.add("is-valid")
+                alert("¡tu usuario no exite!");
 
-                //si la contraseña es valida te lleva al login
-                if (resultadoValidacion.resultado === true) {
-                    botonRecuperarContraseña.addEventListener("submit", function () {
-                        if (document.referrer) {
-                            window.history.back();
-                        } else {
-                            window.location.href = "login.html";
-                        }
-                    })
+                if (document.referrer) {
+                    window.history.back();
+                } else {
+                    window.location.href = "registrate.html";
                 }
             }
+            return;
+        }
 
-            //si el email no existe te dice que tu usuario no existe y te manda a registrate
-        } else if (email !== localStorage.getItem("email")) {
-            alert("¡tu usuario no exite!");
+        if (password.length <= 3) {
+            alert("La contraseña tiene que tener mas de 3 caracteres");
+            return;
+        }
 
-            if (document.referrer) {
-                window.history.back();
-            } else {
-                window.location.href = "registrate.html";
+        usuarioEncontrado.password = password;
+        const usuarios = obtenerUsuarios().map(function (usuario) {
+            if (usuario.id === usuarioEncontrado.id) {
+                return usuarioEncontrado;
             }
+
+            return usuario;
+        });
+
+        guardarUsuarios(usuarios);
+        console.log("contraseña actualizada");
+        alert("Contraseña actualizada!");
+
+        if (document.referrer) {
+            window.history.back();
+        } else {
+            window.location.href = "login.html";
         }
     });
-})
+});
+
+function inicializarUsuarios() {
+    console.log("inicializando usuarios para recuperar contraseña...");
+    const usuariosGuardados = obtenerUsuarios();
+
+    if (usuariosGuardados.length === 0) {
+        guardarUsuarios([
+            {
+                id: "u1",
+                nombreCompleto: "Admin Burguer",
+                direccion: "Casa central 123",
+                telefono: "3410000000",
+                email: "admin@piwp.com",
+                password: "1234",
+                rol: "admin",
+            },
+        ]);
+    }
+}
+
+function obtenerUsuarios() {
+    const usuarios = localStorage.getItem(usaurios_en_ls);
+
+    if (!usuarios) {
+        return [];
+    }
+
+    try {
+        const usuariosParseados = JSON.parse(usuarios);
+        return Array.isArray(usuariosParseados) ? usuariosParseados : [];
+    } catch (error) {
+        console.error("No se pudieron leer los usuarios:", error);
+        return [];
+    }
+}
+
+function guardarUsuarios(usuarios) {
+    localStorage.setItem(usaurios_en_ls, JSON.stringify(usuarios));
+}
+
+function buscarUsuarioPorEmail(email) {
+    const usuarios = obtenerUsuarios();
+    return usuarios.find(function (usuario) {
+        return usuario.email === email;
+    });
+}
