@@ -1,9 +1,17 @@
-const usaurios_en_ls = "usuarios";
+import {
+    agregarUsuario,
+    editarUsuario,
+    eliminarUsuario,
+    existeUsuario,
+    obtenerUsuarioPorId,
+    obtenerUsuarios,
+} from "./modulos/gestorDeUsuarios.js";
 
 window.addEventListener("DOMContentLoaded", function () {
     console.log("ding dom dom dom - usuarios");
     inicializarUsuarios();
     mostrarListaDeUsuarios();
+    agregarListenerFormulario();
 });
 
 function inicializarUsuarios() {
@@ -13,51 +21,9 @@ function inicializarUsuarios() {
 
     if (usuariosGuardados.length === 0) {
         console.log("no habia usuarios, cargando ejemplos");
-        guardarUsuarios([
-            {
-                id: "u1",
-                nombreCompleto: "admin",
-                direccion: "calle falsa 123",
-                telefono: "2914395390",
-                email: "admin@piwp.com",
-                password: "1234",
-                rol: "admin",
-            },
-            {
-                id: "u2",
-                nombreCompleto: "cliente",
-                direccion: "inglaterra 634",
-                telefono: "291439530",
-                email: "cliente@piwp.com",
-                password: "1234",
-                rol: "cliente",
-            },
-        ]);
+        agregarUsuario("admin", "calle falsa 123", "2914395390", "admin@piwp.com", "1234", "admin");
+        agregarUsuario("cliente", "inglaterra 634", "291439530", "cliente@piwp.com", "1234", "cliente");
     }
-}
-
-function obtenerUsuarios() {
-    console.log("leyendo usuarios desde ls");
-    const usuarios = localStorage.getItem(usaurios_en_ls);
-
-    if (!usuarios) {
-        console.log("no existe la clave de usuarios todavia");
-        return [];
-    }
-
-    try {
-        const usuariosParseados = JSON.parse(usuarios);
-        console.log("usuarios parseados:", usuariosParseados);
-        return Array.isArray(usuariosParseados) ? usuariosParseados : [];
-    } catch (error) {
-        console.error("No se pudieron leer los usuarios:", error);
-        return [];
-    }
-}
-
-function guardarUsuarios(usuarios) {
-    console.log("guardando usuarios en ls:", usuarios);
-    localStorage.setItem(usaurios_en_ls, JSON.stringify(usuarios));
 }
 
 function mostrarListaDeUsuarios() {
@@ -90,23 +56,38 @@ function mostrarListaDeUsuarios() {
         const tdEmail = document.createElement("td");
         const tdRol = document.createElement("td");
         const tdAcciones = document.createElement("td");
+        const botonEditar = document.createElement("button");
         const botonEliminar = document.createElement("button");
 
         tdNombre.textContent = usuario.nombreCompleto;
         tdEmail.textContent = usuario.email;
         tdRol.innerHTML = `<span class="badge ${usuario.rol === "admin" ? "text-bg-warning" : "text-bg-primary"}">${usuario.rol}</span>`;
 
+        botonEditar.type = "button";
+        botonEditar.className = "btn btn-warning btn-sm me-2";
+        botonEditar.textContent = "editar";
+        botonEditar.setAttribute("data-editar-usuario", usuario.id);
+
         botonEliminar.type = "button";
-        botonEliminar.className = "btn btn-danger form-control btn-sm";
+        botonEliminar.className = "btn btn-danger btn-sm";
         botonEliminar.textContent = "borrar";
         botonEliminar.setAttribute("data-eliminar-usuario", usuario.id);
 
+        tdAcciones.appendChild(botonEditar);
         tdAcciones.appendChild(botonEliminar);
         tr.appendChild(tdNombre);
         tr.appendChild(tdEmail);
         tr.appendChild(tdRol);
         tr.appendChild(tdAcciones);
         bodyTableListadoDeUsuarios.appendChild(tr);
+    });
+
+    document.querySelectorAll("[data-editar-usuario]").forEach(function (boton) {
+        boton.addEventListener("click", function () {
+            const idUsuario = boton.getAttribute("data-editar-usuario");
+            console.log("editar usuario:", idUsuario);
+            cargarUsuarioEnFormulario(idUsuario);
+        });
     });
 
     document.querySelectorAll("[data-eliminar-usuario]").forEach(function (boton) {
@@ -116,24 +97,122 @@ function mostrarListaDeUsuarios() {
 
             if (window.confirm("¿Querés borrar este usuario?")) {
                 eliminarUsuario(idUsuario);
+                limpiarFormularioSiCorresponde(idUsuario);
+                mostrarMensaje("Usuario borrado.", "success");
                 mostrarListaDeUsuarios();
             }
         });
     });
 }
 
-function eliminarUsuario(idUsuario) {
-    const usuarios = obtenerUsuarios();
-    const usuariosFiltrados = usuarios.filter(function (usuario) {
-        return usuario.id !== idUsuario;
-    });
+function agregarListenerFormulario() {
+    const formulario = document.getElementById("formularioEditarUsuario");
 
-    const usuarioActivo = JSON.parse(localStorage.getItem("usuario_activo") || "null");
-    if (usuarioActivo && usuarioActivo.id === idUsuario) {
-        console.log("borraron al usuario activo");
-        localStorage.removeItem("usuario_activo");
-        localStorage.setItem("usuario_logueado", "false");
+    if (!formulario) {
+        return;
     }
 
-    guardarUsuarios(usuariosFiltrados);
+    formulario.addEventListener("submit", function (evento) {
+        evento.preventDefault();
+        console.log("submit de editar usuario");
+
+        const id = document.getElementById("inputIdUsuario").value;
+        const nombreCompleto = document.getElementById("inputNombreCompleto").value.trim();
+        const direccion = document.getElementById("inputDireccion").value.trim();
+        const telefono = document.getElementById("inputTelefono").value.trim();
+        const email = document.getElementById("inputEmail").value.trim();
+        const password = document.getElementById("inputPassword").value.trim();
+        const rol = document.getElementById("inputRol").value;
+        const mensaje = document.getElementById("mensajeUsuarios");
+
+        console.log("datos editados:", { id, nombreCompleto, direccion, telefono, email, password, rol });
+
+        if (!id) {
+            mostrarMensaje("Primero elegi un usuario para editar.", "warning");
+            return;
+        }
+
+        if (nombreCompleto.length <= 0 || direccion.length <= 5 || telefono.length <= 9 || email.length <= 5 || password.length <= 3) {
+            mostrarMensaje("Hay datos que no estan bien completados.", "danger");
+            return;
+        }
+
+        if (existeUsuario(email, id)) {
+            mostrarMensaje("Ya existe otro usuario con ese email.", "danger");
+            return;
+        }
+
+        const usuarioEditado = {
+            id: id,
+            nombreCompleto: nombreCompleto,
+            direccion: direccion,
+            telefono: telefono,
+            email: email,
+            password: password,
+            rol: rol,
+        };
+
+        const guardado = editarUsuario(usuarioEditado);
+
+        if (!guardado) {
+            mostrarMensaje("No se pudo editar el usuario.", "danger");
+            return;
+        }
+
+        actualizarUsuarioActivo(usuarioEditado);
+        formulario.reset();
+        document.getElementById("inputIdUsuario").value = "";
+        mostrarMensaje("Usuario editado correctamente.", "success");
+        mostrarListaDeUsuarios();
+    });
+}
+
+function cargarUsuarioEnFormulario(idUsuario) {
+    const usuario = obtenerUsuarioPorId(idUsuario);
+
+    if (!usuario) {
+        mostrarMensaje("No se encontro el usuario para editar.", "danger");
+        return;
+    }
+
+    document.getElementById("inputIdUsuario").value = usuario.id;
+    document.getElementById("inputNombreCompleto").value = usuario.nombreCompleto;
+    document.getElementById("inputDireccion").value = usuario.direccion;
+    document.getElementById("inputTelefono").value = usuario.telefono;
+    document.getElementById("inputEmail").value = usuario.email;
+    document.getElementById("inputPassword").value = usuario.password;
+    document.getElementById("inputRol").value = usuario.rol;
+
+    mostrarMensaje("Usuario cargado para editar.", "info");
+}
+
+function limpiarFormularioSiCorresponde(idUsuario) {
+    const idEnFormulario = document.getElementById("inputIdUsuario").value;
+
+    if (idEnFormulario === idUsuario) {
+        const formulario = document.getElementById("formularioEditarUsuario");
+        formulario.reset();
+        document.getElementById("inputIdUsuario").value = "";
+    }
+}
+
+function actualizarUsuarioActivo(usuarioEditado) {
+    const usuarioActivo = JSON.parse(localStorage.getItem("usuario_activo") || "null");
+
+    if (usuarioActivo && usuarioActivo.id === usuarioEditado.id) {
+        console.log("actualizando usuario activo");
+        localStorage.setItem("usuario_activo", JSON.stringify(usuarioEditado));
+    }
+}
+
+function mostrarMensaje(texto, tipo) {
+    const mensaje = document.getElementById("mensajeUsuarios");
+
+    if (!mensaje) {
+        return;
+    }
+
+    console.log("mostrando mensaje:", texto, tipo);
+    mensaje.className = `alert alert-${tipo} mt-3`;
+    mensaje.textContent = texto;
 }

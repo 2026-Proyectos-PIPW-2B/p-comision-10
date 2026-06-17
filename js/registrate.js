@@ -51,7 +51,7 @@ function agregarListenerFormulario(){
                     return;
                 }
 
-                agregarUsuario(nombreCompleto, direccion, telefono, email, password, "usuario")
+                agregarUsuario(nombreCompleto, direccion, telefono, email, password, "cliente")
                 limpiarEstados();
                 alert(`${nombreCompleto}, has sido Registrado!!`);
 
