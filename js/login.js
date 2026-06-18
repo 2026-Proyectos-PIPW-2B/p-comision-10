@@ -1,11 +1,20 @@
+import {
+    obtenerUsuarios,
+    existeUsuarioPorEmail,
+    existeUsuarioPorPassword
+} from "./modulos/gestorDeUsuarios.js";
+
 const usaurios_en_ls = "usuarios";
 
 // totalmente robado jajaja
-window.addEventListener("DOMContentLoaded", function () {
-    console.log("ding dom dom dom");
-    inicializarUsuarios();
+window.addEventListener("DOMContentLoaded", inicializarLogin);
 
-    const iconoPrincipal = document.querySelector("#bd-theme use");
+function inicializarLogin(){
+    inicializarUsuarios()
+}
+
+   function inicializarUsuarios(){
+        const iconoPrincipal = document.querySelector("#bd-theme use");
     const botonesOpciones = document.querySelectorAll("[data-bs-theme-value]");
 
     botonesOpciones.forEach(function (boton) {
@@ -34,7 +43,10 @@ window.addEventListener("DOMContentLoaded", function () {
         iconoPrincipal.setAttribute("href", iconoActivo);
         console.log("seteadooo!!!");
     }
-});
+   }
+
+
+
 
 function obtenerTemaPreferido() {
     const guardado = localStorage.getItem("theme");
@@ -61,9 +73,9 @@ function aplicarTema(tema) {
 }
 
 aplicarTema(obtenerTemaPreferido());
+//
 
 window.addEventListener("DOMContentLoaded", function () {
-    console.log("arranco login...");
     const formulario = document.querySelector("form");
 
     if (formulario) {
@@ -80,7 +92,10 @@ window.addEventListener("DOMContentLoaded", function () {
             limpiarEstados();
             validarDatos(email, password, inputEmail, inputPassword);
 
-            const usuarioEncontrado = buscarUsuarioPorCredenciales(email, password);
+              const usuarioId = obtenerUsuarios();
+              const id = usuarioId.id
+
+            const usuarioEncontrado = buscarUsuarioPorCredenciales(email, password,id);
             console.log("usuario encontrado:", usuarioEncontrado);
 
             if (usuarioEncontrado) {
@@ -102,58 +117,10 @@ window.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-function obtenerUsuarios() {
-    console.log("leyendo usuarios para login");
-    const usuarios = localStorage.getItem(usaurios_en_ls);
-
-    if (!usuarios) {
-        console.log("no existe la clave usuarios todavia");
-        return [];
-    }
-
-    try {
-        const usuariosParseados = JSON.parse(usuarios);
-        console.log("usuarios parseados:", usuariosParseados);
-        return Array.isArray(usuariosParseados) ? usuariosParseados : [];
-    } catch (error) {
-        console.error("No se pudieron leer los usuarios:", error);
-        return [];
-    }
-}
-
-function inicializarUsuarios() {
-    const usuariosGuardados = obtenerUsuarios();
-    console.log("usuarios en login:", usuariosGuardados);
-
-    if (usuariosGuardados.length === 0) {
-        console.log("no habia usuarios, cargando ejemplos");
-        localStorage.setItem(usaurios_en_ls, JSON.stringify([
-            {
-                id: "u1",
-                nombreCompleto: "admin",
-                direccion: "calle falsa 123",
-                telefono: "2914395390",
-                email: "admin@piwp.com",
-                password: "1234",
-                rol: "admin",
-            },
-            {
-                id: "u2",
-                nombreCompleto: "cliente",
-                direccion: "inglaterra 634",
-                telefono: "291439530",
-                email: "cliente@piwp.com",
-                password: "1234",
-                rol: "cliente",
-            },
-        ]));
-    }
-}
-
-function buscarUsuarioPorCredenciales(email, password) {
+function buscarUsuarioPorCredenciales(email, password, id) {
     const usuarios = obtenerUsuarios();
-    return usuarios.find(function (usuario) {
-        return usuario.email === email && usuario.password === password;
+    return usuarios.find(function () {
+        return existeUsuarioPorEmail(email, id) && existeUsuarioPorPassword(password, id);
     });
 }
 
