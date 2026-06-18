@@ -1,20 +1,13 @@
 import {
     obtenerUsuarios,
-    existeUsuarioPorEmail,
-    existeUsuarioPorPassword
 } from "./modulos/gestorDeUsuarios.js";
 
-const usaurios_en_ls = "usuarios";
-
 // totalmente robado jajaja
-window.addEventListener("DOMContentLoaded", inicializarLogin);
+window.addEventListener("DOMContentLoaded", function () {
+    console.log("ding dom dom dom");
+    inicializarUsuarios();
 
-function inicializarLogin(){
-    inicializarUsuarios()
-}
-
-   function inicializarUsuarios(){
-        const iconoPrincipal = document.querySelector("#bd-theme use");
+    const iconoPrincipal = document.querySelector("#bd-theme use");
     const botonesOpciones = document.querySelectorAll("[data-bs-theme-value]");
 
     botonesOpciones.forEach(function (boton) {
@@ -43,10 +36,7 @@ function inicializarLogin(){
         iconoPrincipal.setAttribute("href", iconoActivo);
         console.log("seteadooo!!!");
     }
-   }
-
-
-
+});
 
 function obtenerTemaPreferido() {
     const guardado = localStorage.getItem("theme");
@@ -73,10 +63,17 @@ function aplicarTema(tema) {
 }
 
 aplicarTema(obtenerTemaPreferido());
+
 //
 
-window.addEventListener("DOMContentLoaded", function () {
-    const formulario = document.querySelector("form");
+window.addEventListener("DOMContentLoaded", inicializarLogin)
+
+function inicializarLogin(){
+    validarLogin()
+}
+
+function validarLogin(){
+  const formulario = document.querySelector("form");
 
     if (formulario) {
         formulario.addEventListener("submit", function (evento) {
@@ -88,15 +85,10 @@ window.addEventListener("DOMContentLoaded", function () {
             const inputEmail = document.getElementById("floatingInput");
             const inputPassword = document.getElementById("floatingPassword");
 
-            console.log("credenciales que llegaron:", email, password);
             limpiarEstados();
             validarDatos(email, password, inputEmail, inputPassword);
 
-              const usuarioId = obtenerUsuarios();
-              const id = usuarioId.id
-
-            const usuarioEncontrado = buscarUsuarioPorCredenciales(email, password,id);
-            console.log("usuario encontrado:", usuarioEncontrado);
+            const usuarioEncontrado = buscarUsuarioPorCredenciales(email, password);
 
             if (usuarioEncontrado) {
                 alert("¡Bienvenido... al paraiso!");
@@ -115,12 +107,12 @@ window.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
-});
+}
 
-function buscarUsuarioPorCredenciales(email, password, id) {
+function buscarUsuarioPorCredenciales(email, password) {
     const usuarios = obtenerUsuarios();
-    return usuarios.find(function () {
-        return existeUsuarioPorEmail(email, id) && existeUsuarioPorPassword(password, id);
+    return usuarios.find(function (usuario) {
+        return usuario.email === email && usuario.password === password;
     });
 }
 
