@@ -1,10 +1,19 @@
-import {
-    obtenerUsuarios,
-} from "./modulos/gestorDeUsuarios.js";
+import { obtenerUsuarios } from "./modulos/gestorDeUsuarios.js";
 
-// totalmente robado jajaja
+import { iniciarSesion } from "./modulos/gestorSesion.js";
+
+// Eduardo, soy el profe, esta llamada deberia estar realizada posiblemente desde
+// la funcion asociada al evento DOMContentLoaded
+// Fijate si corresponde invocarla o no, pero no deberia estar suelta entre medio de las
+// definiciones de otras funciones
+// aplicarTema(obtenerTemaPreferido()); 
+
 window.addEventListener("DOMContentLoaded", function () {
+    inicializarTema()
+    inicializarLogin()
+});
 
+function inicializarTema(){
     const iconoPrincipal = document.querySelector("#bd-theme use");
     const botonesOpciones = document.querySelectorAll("[data-bs-theme-value]");
 
@@ -34,7 +43,32 @@ window.addEventListener("DOMContentLoaded", function () {
         iconoPrincipal.setAttribute("href", iconoActivo);
         console.log("seteadooo!!!");
     }
-});
+}
+
+function inicializarLogin(){
+  const formulario = document.querySelector("form");
+
+    if (formulario) {
+        formulario.addEventListener("submit", function (evento) {
+            evento.preventDefault();
+            console.log("submit de login");
+
+            const email = document.getElementById("floatingInput").value.trim();
+            const password = document.getElementById("floatingPassword").value.trim();
+            const inputEmail = document.getElementById("floatingInput");
+            const inputPassword = document.getElementById("floatingPassword");
+
+            limpiarEstados();
+            validarDatos(email, password, inputEmail, inputPassword);
+
+            if (iniciarSesion(email, password)){
+                window.location.href = "index.html";
+            }else{
+                mostrarPasswordIncorrecto(inputPassword)
+            }
+        });
+    }
+}
 
 function obtenerTemaPreferido() {
     const guardado = localStorage.getItem("theme");
@@ -58,60 +92,6 @@ function aplicarTema(tema) {
     }
 
     document.documentElement.setAttribute("data-bs-theme", temaReal);
-}
-
-aplicarTema(obtenerTemaPreferido());
-
-//
-
-window.addEventListener("DOMContentLoaded", inicializarLogin)
-
-function inicializarLogin(){
-    validarLogin()
-}
-
-function validarLogin(){
-  const formulario = document.querySelector("form");
-
-    if (formulario) {
-        formulario.addEventListener("submit", function (evento) {
-            evento.preventDefault();
-            console.log("submit de login");
-
-            const email = document.getElementById("floatingInput").value.trim();
-            const password = document.getElementById("floatingPassword").value.trim();
-            const inputEmail = document.getElementById("floatingInput");
-            const inputPassword = document.getElementById("floatingPassword");
-
-            limpiarEstados();
-            validarDatos(email, password, inputEmail, inputPassword);
-
-            const usuarioEncontrado = buscarUsuarioPorCredenciales(email, password);
-
-            if (usuarioEncontrado) {
-                alert("¡Bienvenido... al paraiso!");
-                limpiarEstados();
-                localStorage.setItem("usuario_logueado", "true");
-                localStorage.setItem("usuario_activo", JSON.stringify(usuarioEncontrado));
-
-                if (document.referrer) {
-                    window.history.back();
-                } else {
-                    window.location.href = "index.html";
-                }
-            } else {
-                localStorage.setItem("usuario_logueado", "false");
-                alert("¡No no, le pifiaste!");
-            }
-        });
-    }
-}
-
-function buscarUsuarioPorCredenciales(email, password) {
-    const usuarios = obtenerUsuarios();
-    return usuarios.find(function (usuario) {
-        return usuario.email === email && usuario.password === password;
-    });
 }
 
 function limpiarEstados() {
@@ -146,4 +126,9 @@ function validarPassword(inputPassword, password) {
     } else {
         inputPassword.classList.add("is-valid");
     }
+}
+
+function mostrarPasswordIncorrecto(inputPassword){
+    inputPassword.classList.add("is-invalid")
+    inputPassword.value = ""
 }

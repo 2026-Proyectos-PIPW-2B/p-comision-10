@@ -1,19 +1,19 @@
-import {obtenerArreglo, setearArreglo} from "./gestorLocalstorage.js";
+import {obtenerValor, setearValor} from "./gestorLocalstorage.js";
 
 const clave_usuarios_ls = "usuarios";
 
 export function agregarUsuario(nombreCompleto, direccion, telefono, email, password, rol) {
-    let usuarios = obtenerArreglo(clave_usuarios_ls);
+    let usuarios = obtenerValor(clave_usuarios_ls) || [] ;
     let usuario = crearUsuario(nombreCompleto, direccion, telefono, email, password, rol);
     usuarios.push(usuario);
-    setearArreglo(clave_usuarios_ls, usuarios);
+    setearValor(clave_usuarios_ls, usuarios);
 }
 
 export function agregarUsuarioNuevaContraseña(password) {
-    let usuarios = obtenerArreglo(clave_usuarios_ls);
+    let usuarios = obtenerValor(clave_usuarios_ls) || [];
     let usuario = crearUsuario(password);
     usuarios.push(usuario);
-    setearArreglo(clave_usuarios_ls, usuarios);
+    setearValor(clave_usuarios_ls, usuarios);
 }
 
 export function buscarUsuarioPorEmail(email) {
@@ -24,7 +24,7 @@ export function buscarUsuarioPorEmail(email) {
 }
 
 export function editarUsuario(usuarioEditado) {
-    let usuarios = obtenerArreglo(clave_usuarios_ls);
+    let usuarios = obtenerValor(clave_usuarios_ls) || [];
     let indice = usuarios.findIndex(function (usuario) {
         return usuario.id === usuarioEditado.id;
     });
@@ -34,16 +34,16 @@ export function editarUsuario(usuarioEditado) {
     }
 
     usuarios[indice] = usuarioEditado;
-    setearArreglo(clave_usuarios_ls, usuarios);
+    setearValor(clave_usuarios_ls, usuarios);
     return true;
 }
 
 export function obtenerUsuarios() {
-    return obtenerArreglo(clave_usuarios_ls);
+    return obtenerValor(clave_usuarios_ls) || [];
 }
 
 export function obtenerUsuarioPorId(idUsuario) {
-    let usuarios = obtenerArreglo(clave_usuarios_ls);
+    let usuarios = obtenerValor(clave_usuarios_ls) || [];
     return usuarios.find(function (usuario) {
         return usuario.id === idUsuario;
     });
@@ -61,7 +61,7 @@ export function eliminarUsuario(idUsuario) {
         localStorage.setItem("usuario_logueado", "false");
     }
 
-    setearArreglo(clave_usuarios_ls, usuariosFiltrados);
+    setearValor(clave_usuarios_ls, usuariosFiltrados);
 }
 
 export function existeUsuario(email, idUsuario = null) {

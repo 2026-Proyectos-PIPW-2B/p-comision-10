@@ -1,3 +1,5 @@
+import { listarProductos } from "./modulos/gestorDeProductos.js"
+
 window.addEventListener("DOMContentLoaded", inicializarIndex)
 
 function inicializarIndex() {
@@ -5,17 +7,17 @@ function inicializarIndex() {
 }
 
 function mostrarCardsEnIndex() {
-    const divContenedorCards = document.getElementById("divContenedorCards")
+    const productos = listarProductos()
 
-    const objectCards = {
-        imagen: "imagenes\logo.png",
-        nombre: "hamburguesa",
-        descripcion: "esto es una hamburguesa",
-        precio: 5000,
-        stock: 3,
+    for(let i=0; i<productos.length; i++){
+        let producto = productos[i]
+        agregarProductoEnContenedor(producto)
     }
+}
 
-    //for (let i = 0; i < objectCards.length; i++) {
+function agregarProductoEnContenedor(producto){
+    const divContenedorCards = document.getElementById("divContenedorCards")
+    
     const divCard = document.createElement("div")
     const imagen = document.createElement("img")
     const divCardBody = document.createElement("div")
@@ -27,14 +29,14 @@ function mostrarCardsEnIndex() {
     const button = document.createElement("button")
 
     divCard.className = "card col-10 col-sm-8 col-md-5 col-xl-3 m-5 text-bg-danger"
-    imagen.src = objectCards.imagen
+    imagen.src = producto.imagen
     imagen.className = "img-fluid mt-2"
     divCardBody.className = "card-body"
     ul.className = "list-unstyled"
-    liNombre.textContent = objectCards.nombre
-    liDescripcion.textContent = objectCards.descripcion
-    liPrecio.textContent = objectCards.precio
-    liStock.textContent = objectCards.stock
+    liNombre.textContent = producto.nombre
+    liDescripcion.textContent = producto.descripcion
+    liPrecio.textContent = producto.precio
+    liStock.textContent = producto.stock
     button.className = "btn btn-warning form-control"
     button.textContent = "Agregar"
 
@@ -52,8 +54,6 @@ function mostrarCardsEnIndex() {
     const botonAgregar = divCard.querySelector("button")
 
     botonAgregar.addEventListener("click", agregarProductosAlCarrito)
-    //}
-
 }
 
 function agregarProductosAlCarrito() {
