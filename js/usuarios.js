@@ -1,4 +1,5 @@
 import {
+    agregarUsuario,
     editarUsuario,
     eliminarUsuario,
     existeUsuario,
@@ -6,15 +7,27 @@ import {
     obtenerUsuarios,
 } from "./modulos/gestorDeUsuarios.js";
 
-window.addEventListener("DOMContentLoaded", inicializarUsuarios)
-
-function inicializarUsuarios(){
+window.addEventListener("DOMContentLoaded", function () {
+    console.log("ding dom dom dom - usuarios");
+    inicializarUsuarios();
     mostrarListaDeUsuarios();
-    agregarListenerFormulario();  
+    agregarListenerFormulario();
+});
+
+function inicializarUsuarios() {
+    console.log("inicializando usuarios...");
+    const usuariosGuardados = obtenerUsuarios();
+    console.log("usuarios guardados:", usuariosGuardados);
+
+    if (usuariosGuardados.length === 0) {
+        console.log("no habia usuarios, cargando ejemplos");
+        agregarUsuario("admin", "calle falsa 123", "2914395390", "admin@piwp.com", "1234", "admin");
+        agregarUsuario("cliente", "inglaterra 634", "291439530", "cliente@piwp.com", "1234", "cliente");
+    }
 }
 
-
 function mostrarListaDeUsuarios() {
+    console.log("mostrando usuarios en la tabla");
     const bodyTableListadoDeUsuarios = document.getElementById("bodyTableListadoDeUsuarios");
 
     if (!bodyTableListadoDeUsuarios) {
@@ -37,7 +50,7 @@ function mostrarListaDeUsuarios() {
         return;
     }
 
-    usuarios.forEach(function (usuarios) {
+    usuarios.forEach(function (usuario) {
         const tr = document.createElement("tr");
         const tdNombre = document.createElement("td");
         const tdEmail = document.createElement("td");
@@ -46,19 +59,19 @@ function mostrarListaDeUsuarios() {
         const botonEditar = document.createElement("button");
         const botonEliminar = document.createElement("button");
 
-        tdNombre.textContent = usuarios.nombreCompleto;
-        tdEmail.textContent = usuarios.email;
-        tdRol.innerHTML = `<span class="badge ${usuarios.rol === "admin" ? "text-bg-warning" : "text-bg-primary"}">${usuarios.rol}</span>`;
+        tdNombre.textContent = usuario.nombreCompleto;
+        tdEmail.textContent = usuario.email;
+        tdRol.innerHTML = `<span class="badge ${usuario.rol === "admin" ? "text-bg-warning" : "text-bg-primary"}">${usuario.rol}</span>`;
 
         botonEditar.type = "button";
         botonEditar.className = "btn btn-warning btn-sm me-2";
         botonEditar.textContent = "editar";
-        botonEditar.setAttribute("data-editar-usuario", usuarios.id);
+        botonEditar.setAttribute("data-editar-usuario", usuario.id);
 
         botonEliminar.type = "button";
         botonEliminar.className = "btn btn-danger btn-sm";
         botonEliminar.textContent = "borrar";
-        botonEliminar.setAttribute("data-eliminar-usuario", usuarios.id);
+        botonEliminar.setAttribute("data-eliminar-usuario", usuario.id);
 
         tdAcciones.appendChild(botonEditar);
         tdAcciones.appendChild(botonEliminar);
@@ -72,6 +85,7 @@ function mostrarListaDeUsuarios() {
     document.querySelectorAll("[data-editar-usuario]").forEach(function (boton) {
         boton.addEventListener("click", function () {
             const idUsuario = boton.getAttribute("data-editar-usuario");
+            console.log("editar usuario:", idUsuario);
             cargarUsuarioEnFormulario(idUsuario);
         });
     });
@@ -79,6 +93,7 @@ function mostrarListaDeUsuarios() {
     document.querySelectorAll("[data-eliminar-usuario]").forEach(function (boton) {
         boton.addEventListener("click", function () {
             const idUsuario = boton.getAttribute("data-eliminar-usuario");
+            console.log("borrando usuario:", idUsuario);
 
             if (window.confirm("¿Querés borrar este usuario?")) {
                 eliminarUsuario(idUsuario);
@@ -99,6 +114,7 @@ function agregarListenerFormulario() {
 
     formulario.addEventListener("submit", function (evento) {
         evento.preventDefault();
+        console.log("submit de editar usuario");
 
         const id = document.getElementById("inputIdUsuario").value;
         const nombreCompleto = document.getElementById("inputNombreCompleto").value.trim();
@@ -107,6 +123,9 @@ function agregarListenerFormulario() {
         const email = document.getElementById("inputEmail").value.trim();
         const password = document.getElementById("inputPassword").value.trim();
         const rol = document.getElementById("inputRol").value;
+        const mensaje = document.getElementById("mensajeUsuarios");
+
+        console.log("datos editados:", { id, nombreCompleto, direccion, telefono, email, password, rol });
 
         if (!id) {
             mostrarMensaje("Primero elegi un usuario para editar.", "warning");
@@ -181,6 +200,7 @@ function actualizarUsuarioActivo(usuarioEditado) {
     const usuarioActivo = JSON.parse(localStorage.getItem("usuario_activo") || "null");
 
     if (usuarioActivo && usuarioActivo.id === usuarioEditado.id) {
+        console.log("actualizando usuario activo");
         localStorage.setItem("usuario_activo", JSON.stringify(usuarioEditado));
     }
 }
@@ -192,6 +212,7 @@ function mostrarMensaje(texto, tipo) {
         return;
     }
 
+    console.log("mostrando mensaje:", texto, tipo);
     mensaje.className = `alert alert-${tipo} mt-3`;
     mensaje.textContent = texto;
 }

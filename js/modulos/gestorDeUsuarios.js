@@ -9,20 +9,6 @@ export function agregarUsuario(nombreCompleto, direccion, telefono, email, passw
     setearArreglo(clave_usuarios_ls, usuarios);
 }
 
-export function agregarUsuarioNuevaContraseña(password) {
-    let usuarios = obtenerArreglo(clave_usuarios_ls);
-    let usuario = crearUsuario(password);
-    usuarios.push(usuario);
-    setearArreglo(clave_usuarios_ls, usuarios);
-}
-
-export function buscarUsuarioPorEmail(email) {
-    const usuarios = obtenerUsuarios();
-    return usuarios.find(function (usuario) {
-        return usuario.email === email;
-    });
-}
-
 export function editarUsuario(usuarioEditado) {
     let usuarios = obtenerArreglo(clave_usuarios_ls);
     let indice = usuarios.findIndex(function (usuario) {
@@ -95,5 +81,3 @@ function crearUsuario(nombreCompleto, direccion, telefono, email, password, rol)
 function generarID() {
     return `u${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
 }
-
-//function para verificar si es administrador o cliente

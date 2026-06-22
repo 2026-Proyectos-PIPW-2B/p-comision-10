@@ -4,6 +4,8 @@ import {
 
 // totalmente robado jajaja
 window.addEventListener("DOMContentLoaded", function () {
+    console.log("ding dom dom dom");
+    inicializarUsuarios();
 
     const iconoPrincipal = document.querySelector("#bd-theme use");
     const botonesOpciones = document.querySelectorAll("[data-bs-theme-value]");
