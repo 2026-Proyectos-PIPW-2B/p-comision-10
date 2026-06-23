@@ -1,5 +1,4 @@
-import { listarProductos} from "./modulos/gestorDeProductos.js"
-import { agregarElementoAlCarrito } from "./modulos/gestorSesion.js"
+import { agregarElementoAlCarrito, listarProductos } from "./modulos/gestorDeProductos.js"
 
 window.addEventListener("DOMContentLoaded", inicializarIndex)
 
@@ -10,15 +9,15 @@ function inicializarIndex() {
 function mostrarCardsEnIndex() {
     const productos = listarProductos()
 
-    for(let i=0; i<productos.length; i++){
+    for (let i = 0; i < productos.length; i++) {
         let producto = productos[i]
         agregarProductoEnContenedor(producto)
     }
 }
 
-function agregarProductoEnContenedor(producto){
+function agregarProductoEnContenedor(producto) {
     const divContenedorCards = document.getElementById("divContenedorCards")
-    
+
     const divCard = document.createElement("div")
     const imagen = document.createElement("img")
     const divCardBody = document.createElement("div")
@@ -58,4 +57,9 @@ function agregarProductoEnContenedor(producto){
 }
 
 function agregarProductosAlCarrito() {
+    let producto = listarProductos()
+    for (let i = 0; i < producto.length; i++) {
+        let idproducto = producto[i].id
+        agregarElementoAlCarrito(idproducto)
+    }
 }

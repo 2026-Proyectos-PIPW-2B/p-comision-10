@@ -29,18 +29,6 @@ export function cerrarSesion() {
     eliminarValor(clave_sesion_ls)
 }
 
-export function agregarElementoAlCarrito() {
-
-}
-
-export function eliminaElementoDelCarrito() {
-
-}
-
-export function obtenerElementosDelCarrito() {
-
-}
-
 function setearInicioSesion(usuario) {
     let objetoSesion = {
         usuario: usuario,

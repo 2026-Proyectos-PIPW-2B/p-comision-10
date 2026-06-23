@@ -1,3 +1,5 @@
+import { obtenerElementosDelCarrito, eliminarProductoDelCarrito } from "./modulos/gestorDeProductos.js"
+
 window.addEventListener("DOMContentLoaded", inicializarCarrito)
 
 function inicializarCarrito() {
@@ -5,17 +7,17 @@ function inicializarCarrito() {
 }
 
 function mostrarCardsEnCarrito() {
+    const productos = obtenerElementosDelCarrito()
+
+    for (let i = 0; i < productos.length; i++) {
+        let producto = productos[i]
+        agregarProductoEnContenedor(producto)
+    }
+}
+
+function agregarProductoEnContenedor(producto) {
     const divContenedorDeCards = document.getElementById("divContenedorDeCards")
 
-    const objectCards = {
-        imagen: "imagenes\logo.png",
-        nombre: "hamburguesa",
-        descripcion: "esto es una hamburguesa",
-        precio: 5000,
-        stock: 3,
-    }
-
-    //for (let i = 0; i < objectCards.length; i++) {
     const divCard = document.createElement("div")
     const imagen = document.createElement("img")
     const divCardBody = document.createElement("div")
@@ -34,14 +36,14 @@ function mostrarCardsEnCarrito() {
     const botonMenos = document.createElement("button")
 
     divCard.className = "card col-10 col-sm-8 col-md-5 col-xl-3 m-5 text-bg-danger"
-    imagen.src = objectCards.imagen
+    imagen.src = producto.imagen
     imagen.className = "img-fluid mt-2"
     divCardBody.className = "card-body"
     ul.className = "list-unstyled"
-    liNombre.textContent = objectCards.nombre
-    liDescripcion.textContent = objectCards.descripcion
-    liPrecio.textContent = objectCards.precio
-    liStock.textContent = objectCards.stock
+    liNombre.textContent = producto.nombre
+    liDescripcion.textContent = producto.descripcion
+    liPrecio.textContent = producto.precio
+    liStock.textContent = producto.stock
     buttonBorrar.className = "btn btn-warning form-control"
     buttonBorrar.textContent = "Borrar"
     form.className = "mt-3"
@@ -76,11 +78,13 @@ function mostrarCardsEnCarrito() {
     const botonBorrar = divCard.querySelector("button")
 
     botonBorrar.addEventListener("click", BorrarProductosDelCarrito)
-    //}
 }
 
-function BorrarProductosDelCarrito (){
-    alert("hola")
+function BorrarProductosDelCarrito() {
+    let producto = obtenerElementosDelCarrito()
+    for (let i = 0; i < producto.length; i++) {
+        eliminarProductoDelCarrito(producto[i])
+    }
 }
 
 
