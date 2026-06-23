@@ -1,4 +1,5 @@
-import { listarProductos } from "./modulos/gestorDeProductos.js"
+import { listarProductos} from "./modulos/gestorDeProductos.js"
+import { agregarElementoAlCarrito } from "./modulos/gestorSesion.js"
 
 window.addEventListener("DOMContentLoaded", inicializarIndex)
 
@@ -57,5 +58,4 @@ function agregarProductoEnContenedor(producto){
 }
 
 function agregarProductosAlCarrito() {
-    alert("hola")
 }

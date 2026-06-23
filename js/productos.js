@@ -3,7 +3,7 @@ const productos_en_ls = "productos";
 // como comento fede
 const productos = [
     {
-        id: "p1",
+        id: "1",
         nombre: "Hamburguesa Clásica",
         descripcion: "La hamburguesa de siempre, al estilo Burguer PIWP.",
         stock: 190,
@@ -11,7 +11,7 @@ const productos = [
         imagen: "imagenes/OIP.webp",
     },
     {
-        id: "p2",
+        id: "2",
         nombre: "Hamburguesa Doble",
         descripcion: "Más carne, más sabor y más ganas de repetir.",
         stock: 120,
@@ -19,7 +19,7 @@ const productos = [
         imagen: "imagenes/OIP (1).webp",
     },
     {
-        id: "p3",
+        id: "3",
         nombre: "Hamburguesa Vegana",
         descripcion: "Una opción más liviana sin perder el estilo.",
         stock: 75,

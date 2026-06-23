@@ -1,9 +1,9 @@
-import {eliminarValor, obtenerValor, setearValor} from "./gestorLocalstorage.js"
+import { eliminarValor, obtenerValor, setearValor } from "./gestorLocalstorage.js"
 import { obtenerUsuarios } from "./gestorDeUsuarios.js"
 
 const clave_sesion_ls = "sesion_activa"
 
-export function iniciarSesion(email, password){
+export function iniciarSesion(email, password) {
     let seInicioSesion = false
 
     const usuarios = obtenerUsuarios()
@@ -12,7 +12,7 @@ export function iniciarSesion(email, password){
     })
 
     // Si existe usuario con email y password
-    if (usuario){
+    if (usuario) {
         seInicioSesion = true
         setearInicioSesion(usuario)
     }
@@ -20,28 +20,28 @@ export function iniciarSesion(email, password){
     return seInicioSesion
 }
 
-export function existeUsuarioLogueado(){
+export function existeUsuarioLogueado() {
     const sesion_activa = obtenerValor(clave_sesion_ls)
     return sesion_activa
 }
 
-export function cerrarSesion(){
+export function cerrarSesion() {
     eliminarValor(clave_sesion_ls)
 }
 
-export function agregarElementoAlCarrito(){
+export function agregarElementoAlCarrito() {
 
 }
 
-export function eliminaElementoDelCarrito(){
+export function eliminaElementoDelCarrito() {
 
 }
 
-export function obtenerElementosDelCarrito(){
-    
+export function obtenerElementosDelCarrito() {
+
 }
 
-function setearInicioSesion(usuario){
+function setearInicioSesion(usuario) {
     let objetoSesion = {
         usuario: usuario,
         carrito: [],
