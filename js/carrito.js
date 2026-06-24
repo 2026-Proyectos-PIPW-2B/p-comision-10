@@ -1,4 +1,4 @@
-import { obtenerElementosDelCarrito, eliminarProductoDelCarrito } from "./modulos/gestorDeProductos.js"
+import { obtenerElementosDelCarrito, eliminarProducto } from "./modulos/gestorDeProductos.js"
 
 window.addEventListener("DOMContentLoaded", inicializarCarrito)
 
@@ -77,15 +77,11 @@ function agregarProductoEnContenedor(producto) {
 
     const botonBorrar = divCard.querySelector("button")
 
-    botonBorrar.addEventListener("click", BorrarProductosDelCarrito)
+    botonBorrar.addEventListener("click", function () {
+        eliminarProducto(producto.id)
+    })
 }
 
-function BorrarProductosDelCarrito() {
-    let producto = obtenerElementosDelCarrito()
-    for (let i = 0; i < producto.length; i++) {
-        eliminarProductoDelCarrito(producto[i])
-    }
-}
 
 
 

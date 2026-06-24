@@ -53,13 +53,8 @@ function agregarProductoEnContenedor(producto) {
 
     const botonAgregar = divCard.querySelector("button")
 
-    botonAgregar.addEventListener("click", agregarProductosAlCarrito)
+    botonAgregar.addEventListener("click", function(){
+        agregarElementoAlCarrito(producto.id)
+    })
 }
 
-function agregarProductosAlCarrito() {
-    let producto = listarProductos()
-    for (let i = 0; i < producto.length; i++) {
-        let idproducto = producto[i].id
-        agregarElementoAlCarrito(idproducto)
-    }
-}

@@ -103,18 +103,16 @@ export function listarProductos() {
 
 export function agregarElementoAlCarrito(idCard) {
     let productos = obtenerValor(clave_productos_ls) || [];
-    //let productosCarrito = obtenerValor(clave_productosCarrito_ls)
-    productos.find(function (producto) {
+    let productosCarrito = obtenerValor(clave_productosCarrito_ls) || [];
+    let producto = productos.find(function (producto) {
         producto.id === idCard;
-        productos.push(producto);
-        return setearValor(clave_productosCarrito_ls, producto);
     })
 
-}
-
-export function eliminarProductoDelCarrito() {
-    let producto = clave_productosCarrito_ls
-    eliminarValor(producto)
+    if (producto){
+        productosCarrito.push(producto);
+        setearValor(clave_productosCarrito_ls, productosCarrito);
+    }
+    return producto;
 }
 
 export function obtenerElementosDelCarrito() {
