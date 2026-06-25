@@ -7,6 +7,9 @@ function inicializarCarrito() {
 }
 
 function mostrarCardsEnCarrito() {
+    const divContenedorDeCards = document.getElementById("divContenedorDeCards")
+    divContenedorDeCards.innerHTML = ""
+
     const productos = obtenerElementosDelCarrito()
 
     for (let i = 0; i < productos.length; i++) {
@@ -32,7 +35,7 @@ function agregarProductoEnContenedor(producto) {
     const spanMas = document.createElement("span")
     const botonMas = document.createElement("button")
     const input = document.createElement("input")
-    const spanMenos = document.createElement("spanMenos")
+    const spanMenos = document.createElement("span")
     const botonMenos = document.createElement("button")
 
     divCard.className = "card col-10 col-sm-8 col-md-5 col-xl-3 m-5 text-bg-danger"

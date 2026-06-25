@@ -107,7 +107,6 @@ export function agregarElementoAlCarrito(idCard) {
     let productosCarrito = obtenerValor(clave_productosCarrito_ls) || [];
 
     let producto = productos.find(function (producto) {
-        console.log("producto.id === idCard", producto.id === idCard)
         return producto.id === idCard;
     })
     
@@ -122,12 +121,10 @@ export function obtenerElementosDelCarrito() {
 }
 
 export function eliminarProductoCarrito(idProducto) {
-    console.log("eliminarProductoCarrito", idProducto)
     let productos = obtenerValor(clave_productosCarrito_ls) || [];
     let productosFiltrados = productos.filter(function (producto) {
         return producto.id !== idProducto;
     });
 
-    console.log("productosFiltrados", productosFiltrados.length)
     setearValor(clave_productosCarrito_ls, productosFiltrados);
 }
