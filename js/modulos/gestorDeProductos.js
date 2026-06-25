@@ -1,7 +1,8 @@
 import { obtenerValor, setearValor } from "./gestorLocalstorage.js";
 
 const clave_productos_ls = "productos";
-const clave_productosCarrito_ls = "productosCarrito"
+const clave_productosCarrito_ls = "productosCarrito";
+const clave_productosComprados_ls = "productosComprados"
 
 const productosEjemplo = [
     {
@@ -109,8 +110,12 @@ export function agregarElementoAlCarrito(idCard) {
     let producto = productos.find(function (producto) {
         return producto.id === idCard;
     })
-    
-    if (producto) {
+
+    let productoExiste = productosCarrito.find(function (producto) {
+        return producto.id === idCard;
+    })
+
+    if (producto && !productoExiste) {
         productosCarrito.push(producto);
         setearValor(clave_productosCarrito_ls, productosCarrito);
     }
@@ -127,4 +132,18 @@ export function eliminarProductoCarrito(idProducto) {
     });
 
     setearValor(clave_productosCarrito_ls, productosFiltrados);
+}
+
+export function agregarProductoHistorial(producto) {
+    let productosComprados = obtenerValor(clave_productosComprados_ls) || [];
+
+    const fecha =  `${new Date}`
+    
+    productosComprados.push(producto);
+
+    setearValor(clave_productosComprados_ls, productosComprados);
+}
+
+export function obtenerElementosDelHistorial() {
+    return obtenerValor(clave_productosComprados_ls) || [];;
 }

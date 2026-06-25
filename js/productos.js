@@ -9,6 +9,7 @@ const productos = [
         stock: 190,
         precio: 5000,
         imagen: "imagenes/OIP.webp",
+        fecha: "",
     },
     {
         id: "2",
@@ -17,6 +18,7 @@ const productos = [
         stock: 120,
         precio: 6800,
         imagen: "imagenes/OIP (1).webp",
+        fecha: "",
     },
     {
         id: "3",
@@ -25,6 +27,7 @@ const productos = [
         stock: 75,
         precio: 6200,
         imagen: "imagenes/descarga.webp",
+        fecha: "",
     },
 ];
 // es muy parecido al del login

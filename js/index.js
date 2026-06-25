@@ -1,10 +1,11 @@
 import { agregarElementoAlCarrito, listarProductos } from "./modulos/gestorDeProductos.js"
 
-window.addEventListener("DOMContentLoaded", inicializarIndex)
-
-function inicializarIndex() {
+window.addEventListener("DOMContentLoaded", function(){
     mostrarCardsEnIndex()
-}
+    filtrarProductos()
+})
+
+
 
 function mostrarCardsEnIndex() {
     const productos = listarProductos()
@@ -56,5 +57,9 @@ function agregarProductoEnContenedor(producto) {
     botonAgregar.addEventListener("click", function(){
         agregarElementoAlCarrito(producto.id)
     })
+}
+
+function filtrarProductos(){
+   const inputFiltrarProducto = document.getElementById("inputFiltrarProducto")
 }
 

@@ -1,10 +1,9 @@
-import { obtenerElementosDelCarrito, eliminarProductoCarrito } from "./modulos/gestorDeProductos.js"
+import { obtenerElementosDelCarrito, eliminarProductoCarrito, agregarProductoHistorial, editarProducto } from "./modulos/gestorDeProductos.js"
 
-window.addEventListener("DOMContentLoaded", inicializarCarrito)
-
-function inicializarCarrito() {
+window.addEventListener("DOMContentLoaded", function () {
     mostrarCardsEnCarrito()
-}
+    comprarProductos()
+})
 
 function mostrarCardsEnCarrito() {
     const divContenedorDeCards = document.getElementById("divContenedorDeCards")
@@ -83,10 +82,26 @@ function agregarProductoEnContenedor(producto) {
     botonBorrar.addEventListener("click", function () {
         eliminarProductoCarrito(producto.id)
         mostrarCardsEnCarrito()
-    })    
+    })
+
 }
 
+function comprarProductos() {
+    const comprarProductos = document.getElementById("comprarProductos")
 
+    comprarProductos.addEventListener("click", function () {
+        const productos = obtenerElementosDelCarrito()
+
+        alert("tu compra ah sido exitosa")
+
+        for (let i = 0; i < productos.length; i++) {
+            let producto = productos[i]
+            agregarProductoHistorial(producto)
+            eliminarProductoCarrito(producto.id)
+            mostrarCardsEnCarrito()
+        }
+    })
+}
 
 
 
