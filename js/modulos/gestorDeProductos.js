@@ -1,4 +1,4 @@
-import { obtenerValor, setearValor, eliminarValor } from "./gestorLocalstorage.js";
+import { obtenerValor, setearValor } from "./gestorLocalstorage.js";
 
 const clave_productos_ls = "productos";
 const clave_productosCarrito_ls = "productosCarrito"
@@ -73,6 +73,7 @@ export function editarProducto(productoEditado) {
 }
 
 export function eliminarProducto(idProducto) {
+    console.log("hola", idProducto)
     let productos = obtenerValor(clave_productos_ls) || [];
     let productosFiltrados = productos.filter(function (producto) {
         return producto.id !== idProducto;
@@ -104,18 +105,29 @@ export function listarProductos() {
 export function agregarElementoAlCarrito(idCard) {
     let productos = obtenerValor(clave_productos_ls) || [];
     let productosCarrito = obtenerValor(clave_productosCarrito_ls) || [];
-    let producto = productos.find(function (producto) {
-        producto.id === idCard;
-    })
 
-    if (producto){
+    let producto = productos.find(function (producto) {
+        console.log("producto.id === idCard", producto.id === idCard)
+        return producto.id === idCard;
+    })
+    
+    if (producto) {
         productosCarrito.push(producto);
         setearValor(clave_productosCarrito_ls, productosCarrito);
     }
-    return producto;
 }
 
 export function obtenerElementosDelCarrito() {
     return obtenerValor(clave_productosCarrito_ls) || [];;
 }
 
+export function eliminarProductoCarrito(idProducto) {
+    console.log("eliminarProductoCarrito", idProducto)
+    let productos = obtenerValor(clave_productosCarrito_ls) || [];
+    let productosFiltrados = productos.filter(function (producto) {
+        return producto.id !== idProducto;
+    });
+
+    console.log("productosFiltrados", productosFiltrados.length)
+    setearValor(clave_productosCarrito_ls, productosFiltrados);
+}
