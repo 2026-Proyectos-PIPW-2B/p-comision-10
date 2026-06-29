@@ -1,8 +1,6 @@
-import { obtenerValor, setearValor } from "./gestorLocalstorage.js";
+import { obtenerArreglo, setearArreglo } from "./gestorLocalstorage.js";
 
 const clave_productos_ls = "productos";
-const clave_productosCarrito_ls = "productosCarrito";
-const clave_productosComprados_ls = "productosComprados"
 
 const productosEjemplo = [
     {
@@ -32,44 +30,53 @@ const productosEjemplo = [
 ];
 
 export function inicializarProductos() {
+    console.log("inicializando productos...");
     let productos = obtenerProductos();
+    console.log("productos guardados:", productos);
 
     if (productos.length === 0) {
-        setearValor(clave_productos_ls, productosEjemplo);
+        console.log("no habia productos, cargando ejemplos");
+        setearArreglo(clave_productos_ls, productosEjemplo);
     }
 }
 
 export function obtenerProductos() {
-    return obtenerValor(clave_productos_ls) || [];
+    console.log("leyendo productos desde ls");
+    return obtenerArreglo(clave_productos_ls);
 }
 
 export function obtenerProductoPorId(idProducto) {
-    let productos = obtenerValor(clave_productos_ls) || [];
+    console.log("buscando producto por id:", idProducto);
+    let productos = obtenerArreglo(clave_productos_ls);
     return productos.find(function (producto) {
         return producto.id === idProducto;
     });
 }
 
 export function agregarProducto(nombre, descripcion, stock, precio, imagen) {
-    let productos = obtenerValor(clave_productos_ls) || [];
+    console.log("agregando producto...");
+    let productos = obtenerArreglo(clave_productos_ls);
     let producto = crearProducto(nombre, descripcion, stock, precio, imagen);
     productos.push(producto);
-    setearValor(clave_productos_ls, productos);
+    setearArreglo(clave_productos_ls, productos);
     return producto;
 }
 
 export function editarProducto(productoEditado) {
-    let productos = obtenerValor(clave_productos_ls) || [];
+    console.log("actualizando producto:", productoEditado);
+    let productos = obtenerArreglo(clave_productos_ls);
     let indice = productos.findIndex(function (producto) {
         return producto.id === productoEditado.id;
     });
 
     if (indice === -1) {
+        console.log("no se encontro el producto para actualizar");
         return false;
     }
 
     productos[indice] = productoEditado;
-    setearValor(clave_productos_ls, productos);
+    setearArreglo(clave_productos_ls, productos);
+    console.log("producto actualizado ok");
     return true;
 }
 
@@ -79,7 +86,7 @@ export function eliminarProducto(idProducto) {
         return producto.id !== idProducto;
     });
 
-    setearValor(clave_productos_ls, productosFiltrados);
+    setearArreglo(clave_productos_ls, productosFiltrados);
 }
 
 function crearProducto(nombre, descripcion, stock, precio, imagen) {
@@ -146,3 +153,4 @@ export function agregarProductoHistorial(producto) {
 export function obtenerElementosDelHistorial() {
     return obtenerValor(clave_productosComprados_ls) || [];;
 }
+

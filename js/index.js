@@ -5,14 +5,37 @@ window.addEventListener("DOMContentLoaded", function () {
     filtrarProductos()
 })
 
+function inicializarIndex() {
+    console.log("ding dom dom dom - index");
+    inicializarProductos();
+    renderizarProductos();
+}
 
+function renderizarProductos() {
+    console.log("renderizando productos del index");
+    const contenedorCards = document.getElementById("divContenedorCards");
 
-function mostrarCardsEnIndex() {
-    const productos = listarProductos()
+    if (!contenedorCards) {
+        console.log("no se encontro el contenedor de cards");
+        return;
+    }
 
-    for (let i = 0; i < productos.length; i++) {
-        let producto = productos[i]
-        agregarProductoEnContenedor(producto)
+    const productos = obtenerProductos();
+    console.log("productos para pintar en index:", productos);
+
+    contenedorCards.innerHTML = "";
+
+    if (productos.length === 0) {
+        const mensaje = document.createElement("div");
+        mensaje.className = "col-12 text-center mt-5";
+        mensaje.innerHTML = `
+            <div class="alert alert-warning mx-auto w-75">
+                No hay productos cargados todavía.
+            </div>
+        `;
+
+        contenedorCards.appendChild(mensaje);
+        return;
     }
 }
 
@@ -77,6 +100,3 @@ function filtrarProductos() {
             }
         }
     })
-}
-
-
