@@ -3,6 +3,7 @@ import {
     existeUsuario,
     obtenerUsuarioPorId,
 } from "./modulos/gestorDeUsuarios.js";
+import { actualizarSesionActiva } from "./modulos/gestorSesion.js";
 
 window.addEventListener("DOMContentLoaded", inicializarPerfil);
 
@@ -102,6 +103,7 @@ function agregarListenerFormulario() {
         }
 
         localStorage.setItem("usuario_activo", JSON.stringify(usuarioEditado));
+        actualizarSesionActiva(usuarioEditado);
         mostrarMensaje("Perfil actualizado correctamente.", "success");
         console.log("perfil actualizado:", usuarioEditado);
     });

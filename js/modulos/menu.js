@@ -1,3 +1,5 @@
+import { cerrarSesion } from "./gestorSesion.js";
+
 const enlacesDelMenu = {
     carrito: {
         texto: "Carrito de compras",
@@ -115,8 +117,7 @@ function conectarCerrarSesion() {
         evento.preventDefault();
         console.log("cerrando sesion");
 
-        localStorage.removeItem("usuario_activo");
-        localStorage.setItem("usuario_logueado", "false");
+        cerrarSesion();
         window.location.href = "index.html";
     });
 }

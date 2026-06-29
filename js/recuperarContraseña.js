@@ -1,12 +1,14 @@
 import {
-    editarUsuario,
     buscarUsuarioPorEmail,
+    editarUsuario,
 } from "./modulos/gestorDeUsuarios.js";
 
-window.addEventListener("DOMContentLoaded", function () {
+window.addEventListener("DOMContentLoaded", inicializarRecuperarContraseña);
+
+function inicializarRecuperarContraseña() {
     console.log("ding dom dom dom - recuperar contraseña");
 
-    const form = document.querySelector("form");
+    const form = document.querySelector("#formRecuperarContraseña");
     const botonConfirmarEmail = document.getElementById("botonConfirmarEmail");
     const botonRecuperarContraseña = document.getElementById("botonRecuperarContraseña");
     const divDelInputContraseña = document.getElementById("divDelInputContraseña");
@@ -28,19 +30,15 @@ window.addEventListener("DOMContentLoaded", function () {
             usuarioEncontrado = buscarUsuarioPorEmail(email);
             console.log("usuario buscado por email:", usuarioEncontrado);
 
-            if (usuarioEncontrado) {
-                botonConfirmarEmail.classList.add("d-none");
-                divDelInputContraseña.classList.remove("d-none");
-                botonRecuperarContraseña.classList.remove("d-none");
-            } else {
-                alert("¡tu usuario no exite!");
-
-                if (document.referrer) {
-                    window.history.back();
-                } else {
-                    window.location.href = "registrate.html";
-                }
+            if (!usuarioEncontrado) {
+                alert("¡tu usuario no existe!");
+                window.location.href = "registrate.html";
+                return;
             }
+
+            botonConfirmarEmail.classList.add("d-none");
+            divDelInputContraseña.classList.remove("d-none");
+            botonRecuperarContraseña.classList.remove("d-none");
             return;
         }
 
@@ -60,4 +58,4 @@ window.addEventListener("DOMContentLoaded", function () {
             window.location.href = "login.html";
         }
     });
-});
+}

@@ -1,4 +1,4 @@
-import {obtenerArreglo, setearArreglo} from "./gestorLocalstorage.js";
+import { obtenerArreglo, setearArreglo } from "./gestorLocalstorage.js";
 
 const clave_usuarios_ls = "usuarios";
 const usuariosEjemplo = [
@@ -81,6 +81,7 @@ export function eliminarUsuario(idUsuario) {
     if (usuarioActivo && usuarioActivo.id === idUsuario) {
         localStorage.removeItem("usuario_activo");
         localStorage.setItem("usuario_logueado", "false");
+        localStorage.removeItem("sesion_activa");
     }
 
     setearArreglo(clave_usuarios_ls, usuariosFiltrados);
