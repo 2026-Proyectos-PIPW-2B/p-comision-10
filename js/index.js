@@ -1,9 +1,18 @@
-import { agregarElementoAlCarrito, listarProductos} from "./modulos/gestorDeProductos.js"
+import { agregarElementoAlCarrito, listarProductos } from "./modulos/gestorDeProductos.js"
 
 window.addEventListener("DOMContentLoaded", function () {
     mostrarCardsEnIndex()
     filtrarProductos()
 })
+
+function mostrarCardsEnIndex() {
+    const productos = listarProductos()
+
+    for (let i = 0; i < productos.length; i++) {
+        let producto = productos[i]
+        agregarProductoEnContenedor(producto)
+    }
+}
 
 function inicializarIndex() {
     console.log("ding dom dom dom - index");
@@ -99,4 +108,6 @@ function filtrarProductos() {
                 agregarProductoEnContenedor(arrayParaFiltrar)
             }
         }
-    })}
+    })
+}
+
