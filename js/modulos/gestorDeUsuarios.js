@@ -1,6 +1,28 @@
 import {obtenerArreglo, setearArreglo} from "./gestorLocalstorage.js";
 
 const clave_usuarios_ls = "usuarios";
+const usuariosEjemplo = [
+    {
+        id: "u1",
+        nombreCompleto: "Admin Burguer",
+        direccion: "Casa central 123",
+        telefono: "3410000000",
+        email: "admin@piwp.com",
+        password: "1234",
+        rol: "admin",
+    },
+    {
+        id: "u2",
+        nombreCompleto: "Cliente Prueba",
+        direccion: "Calle Falsa 123",
+        telefono: "3411111111",
+        email: "cliente@piwp.com",
+        password: "1234",
+        rol: "cliente",
+    },
+];
+
+inicializarUsuariosDePrueba();
 
 export function agregarUsuario(nombreCompleto, direccion, telefono, email, password, rol) {
     let usuarios = obtenerArreglo(clave_usuarios_ls);
@@ -94,6 +116,15 @@ function crearUsuario(nombreCompleto, direccion, telefono, email, password, rol)
 
 function generarID() {
     return `u${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
+}
+
+function inicializarUsuariosDePrueba() {
+    let usuarios = obtenerArreglo(clave_usuarios_ls);
+
+    if (usuarios.length === 0) {
+        console.log("cargando usuarios de prueba");
+        setearArreglo(clave_usuarios_ls, usuariosEjemplo);
+    }
 }
 
 //function para verificar si es administrador o cliente
