@@ -1,14 +1,14 @@
 
-export function obtenerArreglo(clave){
+export function obtenerValor(clave){
     let valor = localStorage.getItem(clave)
-    if (valor){
-        return JSON.parse(valor)
-    }else{
-        return []
-    }
+    return JSON.parse(valor)
 }
 
-export function setearArreglo(clave, arreglo){
-    let arregloConvertido = JSON.stringify(arreglo)
-    let valor = localStorage.setItem(clave, arregloConvertido)
+export function setearValor(clave, valor){
+    let valorConvertido = JSON.stringify(valor)
+    localStorage.setItem(clave, valorConvertido)
+}
+
+export function eliminarValor(clave){
+    localStorage.removeItem(clave)
 }

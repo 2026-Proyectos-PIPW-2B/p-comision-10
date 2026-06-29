@@ -1,21 +1,25 @@
-window.addEventListener("DOMContentLoaded", inicializarCarrito)
+import { obtenerElementosDelCarrito, eliminarProductoCarrito, agregarProductoHistorial, editarProducto } from "./modulos/gestorDeProductos.js"
 
-function inicializarCarrito() {
+window.addEventListener("DOMContentLoaded", function () {
     mostrarCardsEnCarrito()
-}
+    comprarProductos()
+})
 
 function mostrarCardsEnCarrito() {
     const divContenedorDeCards = document.getElementById("divContenedorDeCards")
+    divContenedorDeCards.innerHTML = ""
 
-    const objectCards = {
-        imagen: "imagenes\logo.png",
-        nombre: "hamburguesa",
-        descripcion: "esto es una hamburguesa",
-        precio: 5000,
-        stock: 3,
+    const productos = obtenerElementosDelCarrito()
+
+    for (let i = 0; i < productos.length; i++) {
+        let producto = productos[i]
+        agregarProductoEnContenedor(producto)
     }
+}
 
-    //for (let i = 0; i < objectCards.length; i++) {
+function agregarProductoEnContenedor(producto) {
+    const divContenedorDeCards = document.getElementById("divContenedorDeCards")
+
     const divCard = document.createElement("div")
     const imagen = document.createElement("img")
     const divCardBody = document.createElement("div")
@@ -30,18 +34,18 @@ function mostrarCardsEnCarrito() {
     const spanMas = document.createElement("span")
     const botonMas = document.createElement("button")
     const input = document.createElement("input")
-    const spanMenos = document.createElement("spanMenos")
+    const spanMenos = document.createElement("span")
     const botonMenos = document.createElement("button")
 
     divCard.className = "card col-10 col-sm-8 col-md-5 col-xl-3 m-5 text-bg-danger"
-    imagen.src = objectCards.imagen
+    imagen.src = producto.imagen
     imagen.className = "img-fluid mt-2"
     divCardBody.className = "card-body"
     ul.className = "list-unstyled"
-    liNombre.textContent = objectCards.nombre
-    liDescripcion.textContent = objectCards.descripcion
-    liPrecio.textContent = objectCards.precio
-    liStock.textContent = objectCards.stock
+    liNombre.textContent = producto.nombre
+    liDescripcion.textContent = producto.descripcion
+    liPrecio.textContent = producto.precio
+    liStock.textContent = producto.stock
     buttonBorrar.className = "btn btn-warning form-control"
     buttonBorrar.textContent = "Borrar"
     form.className = "mt-3"
@@ -75,12 +79,28 @@ function mostrarCardsEnCarrito() {
 
     const botonBorrar = divCard.querySelector("button")
 
-    botonBorrar.addEventListener("click", BorrarProductosDelCarrito)
-    //}
+    botonBorrar.addEventListener("click", function () {
+        eliminarProductoCarrito(producto.id)
+        mostrarCardsEnCarrito()
+    })
+
 }
 
-function BorrarProductosDelCarrito (){
-    alert("hola")
+function comprarProductos() {
+    const comprarProductos = document.getElementById("comprarProductos")
+
+    comprarProductos.addEventListener("click", function () {
+        const productos = obtenerElementosDelCarrito()
+
+        alert("tu compra ah sido exitosa")
+
+        for (let i = 0; i < productos.length; i++) {
+            let producto = productos[i]
+            agregarProductoHistorial(producto)
+            eliminarProductoCarrito(producto.id)
+            mostrarCardsEnCarrito()
+        }
+    })
 }
 
 

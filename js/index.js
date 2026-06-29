@@ -40,6 +40,10 @@ function renderizarProductos() {
         contenedorCards.appendChild(mensaje);
         return;
     }
+}
+
+function agregarProductoEnContenedor(producto) {
+    const divContenedorCards = document.getElementById("divContenedorCards")
 
     for (let i = 0; i < productos.length; i++) {
         const producto = productos[i];
@@ -91,3 +95,4 @@ function renderizarProductos() {
 function formatearPrecio(precio) {
     return `$${Number(precio).toLocaleString("es-AR")}`;
 }
+
