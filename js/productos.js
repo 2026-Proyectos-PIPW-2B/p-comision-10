@@ -1,36 +1,12 @@
-// mas facil de encontrar
-const productos_en_ls = "productos";
-// como comento fede
-const productos = [
-    {
-        id: "1",
-        nombre: "Hamburguesa Clásica",
-        descripcion: "La hamburguesa de siempre, al estilo Burguer PIWP.",
-        stock: 190,
-        precio: 5000,
-        imagen: "imagenes/OIP.webp",
-        fecha: "",
-    },
-    {
-        id: "2",
-        nombre: "Hamburguesa Doble",
-        descripcion: "Más carne, más sabor y más ganas de repetir.",
-        stock: 120,
-        precio: 6800,
-        imagen: "imagenes/OIP (1).webp",
-        fecha: "",
-    },
-    {
-        id: "3",
-        nombre: "Hamburguesa Vegana",
-        descripcion: "Una opción más liviana sin perder el estilo.",
-        stock: 75,
-        precio: 6200,
-        imagen: "imagenes/descarga.webp",
-        fecha: "",
-    },
-];
-// es muy parecido al del login
+import {
+    agregarProducto,
+    editarProducto,
+    eliminarProducto,
+    inicializarProductos,
+    obtenerProductoPorId,
+    obtenerProductos,
+} from "./modulos/gestorDeProductos.js";
+
 window.addEventListener("DOMContentLoaded", function () {
     console.log("ding dom dom dom - productos");
     inicializarProductos();
@@ -38,41 +14,6 @@ window.addEventListener("DOMContentLoaded", function () {
     conectarFormularioEdicion();
     renderizarProductos();
 });
-// como afanamos de LIPW jaja
-function inicializarProductos() {
-    console.log("inicializando productos...");
-    const productosGuardados = obtenerProductos();
-    console.log("productos guardados:", productosGuardados);
-
-    if (productosGuardados.length === 0) {
-        console.log("no habia productos, cargando ejemplos");
-        guardarProductos(productos);
-    }
-}
-
-function obtenerProductos() {
-    console.log("leyendo productos desde ls");
-    const productos = localStorage.getItem(productos_en_ls);
-
-    if (!productos) {
-        console.log("no existe la clave de productos todavia");
-        return [];
-    }
-
-    try {
-        const productosParseados = JSON.parse(productos);
-        console.log("productos...", productosParseados);
-        return Array.isArray(productosParseados) ? productosParseados : [];
-    } catch (error) {
-        console.error("No se pudieron leer los productos:", error);
-        return [];
-    }
-}
-
-function guardarProductos(productos) {
-    console.log("guardando productos en ls:", productos);
-    localStorage.setItem(productos_en_ls, JSON.stringify(productos));
-}
 
 function crearIdProducto() {
     const idNuevo = `p${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
@@ -86,48 +27,6 @@ function normalizarTexto(valor) {
 
 function normalizarNumero(valor) {
     return Number.parseFloat(valor);
-}
-
-function obtenerProductoPorId(idProducto) {
-    console.log("buscando producto por id:", idProducto);
-    return obtenerProductos().find(function (producto) {
-        return producto.id === idProducto;
-    });
-}
-
-function agregarProducto(productoNuevo) {
-    console.log("agregando producto:", productoNuevo);
-    const productos = obtenerProductos();
-    productos.push(productoNuevo);
-    guardarProductos(productos);
-}
-
-function actualizarProducto(productoActualizado) {
-    console.log("actualizando producto:", productoActualizado);
-    const productos = obtenerProductos();
-    const indice = productos.findIndex(function (producto) {
-        return producto.id === productoActualizado.id;
-    });
-
-    if (indice === -1) {
-        console.log("no se encontro el producto para actualizar");
-        return false;
-    }
-
-    productos[indice] = productoActualizado;
-    guardarProductos(productos);
-    console.log("producto actualizado ok");
-    return true;
-}
-
-function eliminarProducto(idProducto) {
-    console.log("eliminando producto:", idProducto);
-    const productos = obtenerProductos();
-    const productosFiltrados = productos.filter(function (producto) {
-        return producto.id !== idProducto;
-    });
-
-    guardarProductos(productosFiltrados);
 }
 
 function conectarFormularioCreacion() {
@@ -154,14 +53,7 @@ function conectarFormularioCreacion() {
             return;
         }
 
-        agregarProducto({
-            id: crearIdProducto(),
-            nombre,
-            descripcion,
-            stock,
-            precio,
-            imagen,
-        });
+        agregarProducto(nombre, descripcion, stock, precio, imagen);
 
         formulario.reset();
         console.log("formulario de producto limpiado");
@@ -216,7 +108,7 @@ function conectarFormularioEdicion() {
             return;
         }
 
-        const guardado = actualizarProducto(productoActualizado);
+        const guardado = editarProducto(productoActualizado);
 
         if (!guardado) {
             console.log("no se pudo guardar la edicion");
@@ -278,7 +170,7 @@ function renderizarProductos() {
             const filaVacia = document.createElement("tr");
             const celdaVacia = document.createElement("td");
 
-            celdaVacia.colSpan = 6;
+            celdaVacia.colSpan = 5;
             celdaVacia.className = "text-center py-4";
             celdaVacia.textContent = "No hay productos cargados todavía.";
             console.log("tabla vacia, mostrando estado inicial");
@@ -321,7 +213,7 @@ function renderizarProductos() {
             cuerpoTabla.appendChild(fila);
         });
     });
-    // probando, a ver si me fucniona
+
     document.querySelectorAll("[data-eliminar-producto]").forEach(function (boton) {
         boton.addEventListener("click", function () {
             const idProducto = boton.getAttribute("data-eliminar-producto");
@@ -364,7 +256,7 @@ function ponerClaseEnStock(stock) {
 
     return "text-bg-success";
 }
-// re afanadooo
+
 function formatearPrecio(precio) {
     return new Intl.NumberFormat("es-AR", {
         style: "currency",
