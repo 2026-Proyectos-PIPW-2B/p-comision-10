@@ -81,8 +81,7 @@ export function editarProducto(productoEditado) {
 }
 
 export function eliminarProducto(idProducto) {
-    console.log("eliminando producto:", idProducto);
-    let productos = obtenerArreglo(clave_productos_ls);
+    let productos = obtenerValor(clave_productos_ls) || [];
     let productosFiltrados = productos.filter(function (producto) {
         return producto.id !== idProducto;
     });
@@ -104,3 +103,54 @@ function crearProducto(nombre, descripcion, stock, precio, imagen) {
 function generarID() {
     return `p${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
 }
+
+export function listarProductos() {
+    const productos = obtenerValor(clave_productos_ls)
+    return productos || []
+}
+
+export function agregarElementoAlCarrito(idCard) {
+    let productos = obtenerValor(clave_productos_ls) || [];
+    let productosCarrito = obtenerValor(clave_productosCarrito_ls) || [];
+
+    let producto = productos.find(function (producto) {
+        return producto.id === idCard;
+    })
+
+    let productoExiste = productosCarrito.find(function (producto) {
+        return producto.id === idCard;
+    })
+
+    if (producto && !productoExiste) {
+        productosCarrito.push(producto);
+        setearValor(clave_productosCarrito_ls, productosCarrito);
+    }
+}
+
+export function obtenerElementosDelCarrito() {
+    return obtenerValor(clave_productosCarrito_ls) || [];;
+}
+
+export function eliminarProductoCarrito(idProducto) {
+    let productos = obtenerValor(clave_productosCarrito_ls) || [];
+    let productosFiltrados = productos.filter(function (producto) {
+        return producto.id !== idProducto;
+    });
+
+    setearValor(clave_productosCarrito_ls, productosFiltrados);
+}
+
+export function agregarProductoHistorial(producto) {
+    let productosComprados = obtenerValor(clave_productosComprados_ls) || [];
+
+    producto.fecha =  new Date().toLocaleString()
+    
+    productosComprados.push(producto);
+
+    setearValor(clave_productosComprados_ls, productosComprados);
+}
+
+export function obtenerElementosDelHistorial() {
+    return obtenerValor(clave_productosComprados_ls) || [];;
+}
+
