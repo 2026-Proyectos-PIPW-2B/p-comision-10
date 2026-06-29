@@ -27,10 +27,10 @@ function mostrarHistorial(producto) {
     const tdTotal = document.createElement("td")
 
     img.src = producto.imagen
-    img.width = 45
-    img.height = 45
+    img.width = 60
+    img.height = 60
     tdProducto.textContent = producto.nombre
-    tdFecha.textContent = "123"
+    tdFecha.textContent = producto.fecha
     tdCantidad.textContent = producto.stock
     tdTotal.textContent = producto.stock*producto.precio
 

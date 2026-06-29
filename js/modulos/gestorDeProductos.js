@@ -137,7 +137,7 @@ export function eliminarProductoCarrito(idProducto) {
 export function agregarProductoHistorial(producto) {
     let productosComprados = obtenerValor(clave_productosComprados_ls) || [];
 
-    const fecha =  `${new Date}`
+    producto.fecha =  new Date().toLocaleString()
     
     productosComprados.push(producto);
 
