@@ -51,12 +51,12 @@ function agregarProductoEnContenedor(producto) {
     form.className = "mt-3"
     DivDeForm.className = "input-group mb-3"
     spanMas.className = "input-group-text border-0 text-bg-danger"
-    botonMas.className = "btn btn-warning"
+    botonMas.className = "btn btn-warning btnMas"
     botonMas.textContent = "+"
     input.className = "form-control border-dark"
     input.type = "number"
     spanMenos.className = "input-group-text border-0 text-bg-danger"
-    botonMenos.className = "btn btn-warning"
+    botonMenos.className = "btn btn-warning btnMenos"
     botonMenos.textContent = "-"
 
     ul.appendChild(liNombre)
@@ -77,12 +77,26 @@ function agregarProductoEnContenedor(producto) {
 
     divContenedorDeCards.appendChild(divCard)
 
+    const inputStock = divCard.querySelector("input")
     const botonBorrar = divCard.querySelector("button")
+    const btnMenos = divCard.querySelector(".btnMenos")
+    const btnMas = divCard.querySelector(".btnMas")
 
     botonBorrar.addEventListener("click", function () {
         eliminarProductoCarrito(producto.id)
         mostrarCardsEnCarrito()
     })
+
+     btnMenos.addEventListener("click", function(){
+        resultado = (0 - 1)
+        inputStock.value = resultado
+    })
+
+     btnMas.addEventListener("click", function(){
+        resultado = (0 + 1)
+        inputStock.value = resultado
+    })
+
 
 }
 

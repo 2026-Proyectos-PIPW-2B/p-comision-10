@@ -74,7 +74,6 @@ export function editarProducto(productoEditado) {
 }
 
 export function eliminarProducto(idProducto) {
-    console.log("hola", idProducto)
     let productos = obtenerValor(clave_productos_ls) || [];
     let productosFiltrados = productos.filter(function (producto) {
         return producto.id !== idProducto;

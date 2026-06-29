@@ -1,6 +1,6 @@
-import { agregarElementoAlCarrito, listarProductos } from "./modulos/gestorDeProductos.js"
+import { agregarElementoAlCarrito, listarProductos} from "./modulos/gestorDeProductos.js"
 
-window.addEventListener("DOMContentLoaded", function(){
+window.addEventListener("DOMContentLoaded", function () {
     mostrarCardsEnIndex()
     filtrarProductos()
 })
@@ -54,12 +54,29 @@ function agregarProductoEnContenedor(producto) {
 
     const botonAgregar = divCard.querySelector("button")
 
-    botonAgregar.addEventListener("click", function(){
+    botonAgregar.addEventListener("click", function () {
         agregarElementoAlCarrito(producto.id)
     })
 }
 
-function filtrarProductos(){
-   const inputFiltrarProducto = document.getElementById("inputFiltrarProducto")
+function filtrarProductos() {
+    const divContenedorCards = document.getElementById("divContenedorCards")
+    const input = document.getElementById("inputFiltrarProducto")
+    const cardsProductos = listarProductos()
+
+    const arrayParaFiltrar = []
+
+    input.addEventListener("input", function () {
+        const productoFiltrado = document.getElementById("inputFiltrarProducto").value.toLowerCase().trim()
+
+        for (let i = 0; i < cardsProductos.length; i++) {
+            if (productoFiltrado.includes(input)) {
+                divContenedorCards.innerHTML = ""
+                arrayParaFiltrar.push(cardsProductos[i])
+                agregarProductoEnContenedor(arrayParaFiltrar)
+            }
+        }
+    })
 }
+
 
