@@ -1,6 +1,8 @@
 import { obtenerArreglo, setearArreglo } from "./gestorLocalstorage.js";
 
 const clave_productos_ls = "productos";
+const clave_productosCarrito_ls = "productosCarrito";
+const clave_productosComprados_ls = "productosComprados"
 
 const productosEjemplo = [
     {
@@ -81,7 +83,7 @@ export function editarProducto(productoEditado) {
 }
 
 export function eliminarProducto(idProducto) {
-    let productos = obtenerValor(clave_productos_ls) || [];
+    let productos = obtenerArreglo(clave_productos_ls) || [];
     let productosFiltrados = productos.filter(function (producto) {
         return producto.id !== idProducto;
     });
