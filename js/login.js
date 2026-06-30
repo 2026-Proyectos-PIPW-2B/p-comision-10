@@ -127,6 +127,42 @@ function inicializarProductos() {
             imagen: "imagenes/descarga.webp",
             fecha: "",
         },
+        {
+            id: "4",
+            nombre: "papas fritas clasicas",
+            descripcion: "un rico acompañamiento crocante para tu hamburguesa",
+            stock: 10,
+            precio: 3000,
+            imagen: "imagenes/OIP (4).webp",
+            fecha: "",
+        },
+        {
+            id: "5",
+            nombre: "hamburguesa doblemente vegana",
+            descripcion: "el doble de hojas el doble de vegano",
+            stock: 3,
+            precio: 7000,
+            imagen: "imagenes/descarga (1).webp",
+            fecha: "",
+        },
+        {
+            id: "6",
+            nombre: "monster ",
+            descripcion: "bebida energizante y refrescante ",
+            stock: 100,
+            precio: 3500,
+            imagen: "imagenes/descarga (3).webp",
+            fecha: "",
+        },
+        {
+            id: "7",
+            nombre: "coca-cola ",
+            descripcion: "el tipico refresco que nunca falla",
+            stock: 2,
+            precio: 2000,
+            imagen: "imagenes/descarga (2).webp",
+            fecha: "",
+        },
     ];
 
     setearValor(clave_productos_ls, productos)
@@ -142,7 +178,7 @@ function inicializarUsuarios() {
         telefono: 12345678910,
         email: "hola@gmial.com",
         password: "hola",
-        rol: "administrador",
+        rol: "admin",
     },
     {
         id: 2,
