@@ -8,7 +8,6 @@ import {
 } from "./modulos/gestorDeProductos.js";
 
 window.addEventListener("DOMContentLoaded", function () {
-    console.log("ding dom dom dom - productos");
     inicializarProductos();
     conectarFormularioCreacion();
     conectarFormularioEdicion();
@@ -17,7 +16,6 @@ window.addEventListener("DOMContentLoaded", function () {
 
 function crearIdProducto() {
     const idNuevo = `p${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
-    console.log("id de nuevo producto:", idNuevo);
     return idNuevo;
 }
 
@@ -38,7 +36,6 @@ function conectarFormularioCreacion() {
 
     formulario.addEventListener("submit", function (evento) {
         evento.preventDefault();
-        console.log("submit de crear producto");
 
         const nombre = normalizarTexto(document.getElementById("inputNombreProducto").value);
         const descripcion = normalizarTexto(document.getElementById("inputDescripcionProducto").value);
@@ -46,17 +43,14 @@ function conectarFormularioCreacion() {
         const precio = normalizarNumero(document.getElementById("inputPrecioProducto").value);
         const imagen = normalizarTexto(document.getElementById("inputImagenProducto").value) || "imagenes/logo.png";
         const mensaje = document.getElementById("mensajeProductos");
-        console.log("valores capturados:", { nombre, descripcion, stock, precio, imagen });
 
         if (!validarProducto(nombre, descripcion, stock, precio, mensaje)) {
-            console.log("validacion de producto fallida");
             return;
         }
 
         agregarProducto(nombre, descripcion, stock, precio, imagen);
 
         formulario.reset();
-        console.log("formulario de producto limpiado");
         mostrarMensaje(mensaje, "Producto creado correctamente.", "success");
         renderizarProductos();
     });
@@ -71,17 +65,15 @@ function conectarFormularioEdicion() {
 
     const parametros = new URLSearchParams(window.location.search);
     const idProducto = parametros.get("id");
-    console.log("parametro id de edicion:", idProducto);
     const producto = idProducto ? obtenerProductoPorId(idProducto) : obtenerProductos()[0];
     const mensaje = document.getElementById("mensajeEdicionProductos");
 
     if (!producto) {
-        console.log("no hay producto para editar");
+
         mostrarMensaje(mensaje, "No hay productos cargados para editar.", "warning");
         return;
     }
 
-    console.log("cargando producto en formulario de edicion:", producto);
     document.getElementById("inputIdProductoEditar").value = producto.id;
     document.getElementById("inputNombreProductoEditar").value = producto.nombre;
     document.getElementById("inputDescripcionProductoEditar").value = producto.descripcion;
@@ -91,7 +83,6 @@ function conectarFormularioEdicion() {
 
     formulario.addEventListener("submit", function (evento) {
         evento.preventDefault();
-        console.log("submit de editar producto");
 
         const productoActualizado = {
             id: document.getElementById("inputIdProductoEditar").value,
@@ -101,29 +92,24 @@ function conectarFormularioEdicion() {
             precio: normalizarNumero(document.getElementById("inputPrecioProductoEditar").value),
             imagen: normalizarTexto(document.getElementById("inputImagenProductoEditar").value) || "imagenes/logo.png",
         };
-        console.log("datos nuevos del producto:", productoActualizado);
 
         if (!validarProducto(productoActualizado.nombre, productoActualizado.descripcion, productoActualizado.stock, productoActualizado.precio, mensaje)) {
-            console.log("validacion de edicion fallida");
             return;
         }
 
         const guardado = editarProducto(productoActualizado);
 
         if (!guardado) {
-            console.log("no se pudo guardar la edicion");
             mostrarMensaje(mensaje, "No se encontró el producto para actualizar.", "danger");
             return;
         }
 
-        console.log("edicion guardada con exito");
         mostrarMensaje(mensaje, "Producto actualizado correctamente.", "success");
         renderizarProductos();
     });
 }
 
 function validarProducto(nombre, descripcion, stock, precio, mensaje) {
-    console.log("validando producto:", { nombre, descripcion, stock, precio });
     if (nombre.length < 3) {
         mostrarMensaje(mensaje, "El nombre del producto debe tener al menos 3 caracteres.", "danger");
         return false;
@@ -152,16 +138,13 @@ function mostrarMensaje(elemento, texto, tipo) {
         return;
     }
 
-    console.log("mostrando mensaje:", texto, tipo);
     elemento.className = `alert alert-${tipo} mt-3`;
     elemento.textContent = texto;
 }
 
 function renderizarProductos() {
-    console.log("mostrando productos en tablas");
     const cuerposTabla = document.querySelectorAll("[data-productos-tabla]");
     const productos = obtenerProductos();
-    console.log("productos que hay que  mostrar:", productos);
 
     cuerposTabla.forEach(function (cuerpoTabla) {
         cuerpoTabla.innerHTML = "";
@@ -203,7 +186,6 @@ function renderizarProductos() {
                     <button class="btn btn-danger btn-sm" type="button" data-eliminar-producto="${producto.id}">eliminar</button>
                 </div>
             `;
-            console.log("fila producto:", producto.id);
 
             fila.appendChild(celdaProducto);
             fila.appendChild(celdaDescripcion);
@@ -217,7 +199,6 @@ function renderizarProductos() {
     document.querySelectorAll("[data-eliminar-producto]").forEach(function (boton) {
         boton.addEventListener("click", function () {
             const idProducto = boton.getAttribute("data-eliminar-producto");
-            console.log("click en eliminar producto:", idProducto);
 
             if (window.confirm("¿Querés eliminar este producto?")) {
                 eliminarProducto(idProducto);
@@ -229,7 +210,6 @@ function renderizarProductos() {
                     const productosRestantes = obtenerProductos();
 
                     if (productosRestantes.length > 0) {
-                        console.log("producto borrado era el editado, cargando otro");
                         window.location.href = `editar_productos.html?id=${productosRestantes[0].id}`;
                         return;
                     }
@@ -238,7 +218,6 @@ function renderizarProductos() {
                     mostrarMensaje(document.getElementById("mensajeEdicionProductos"), "No quedan productos para editar.", "warning");
                 }
 
-                console.log("producto eliminado");
                 renderizarProductos();
             }
         });

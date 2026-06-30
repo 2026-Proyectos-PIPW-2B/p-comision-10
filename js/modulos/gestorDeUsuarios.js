@@ -50,7 +50,7 @@ export function obtenerUsuarioPorId(idUsuario) {
 }
 
 export function eliminarUsuario(idUsuario) {
-    let usuarios = obtenerArreglo(clave_usuarios_ls);
+    let usuarios = obtenerValor(clave_usuarios_ls);
     let usuariosFiltrados = usuarios.filter(function (usuario) {
         return usuario.id !== idUsuario;
     });
@@ -65,7 +65,7 @@ export function eliminarUsuario(idUsuario) {
 }
 
 export function existeUsuario(email, idUsuario = null) {
-    let usuarios = obtenerArreglo(clave_usuarios_ls);
+    let usuarios = obtenerValor(clave_usuarios_ls);
     let existe = false;
 
     for (let i = 0; i < usuarios.length; i++) {
