@@ -4,6 +4,8 @@ import {
     obtenerProductos,
 } from "./modulos/gestorDeProductos.js";
 
+import { existeUsuarioLogueado } from "./modulos/gestorSesion.js";
+
 window.addEventListener("DOMContentLoaded", inicializarIndex);
 
 function inicializarIndex() {
@@ -80,13 +82,18 @@ function renderizarProductos() {
         boton.textContent = "agregar";
 
         boton.addEventListener("click", function () {
-            console.log("click en agregar producto:", producto.id);
-            const seAgrego = agregarElementoAlCarrito(producto.id);
 
-            if (seAgrego) {
-                alert(`Se agregó ${producto.nombre} al carrito`);
+            const usuarioLogueado = localStorage.getItem("usuario_logueado");
+            const usuarioActivo = JSON.parse(localStorage.getItem("usuario_activo") || "null");
+            if (usuarioLogueado !== "false" || usuarioActivo) {
+                const seAgrego = agregarElementoAlCarrito(producto.id);
+                if (seAgrego) {
+                    alert(`Se agregó ${producto.nombre} al carrito`);
+                } else {
+                    alert("Ese producto ya está en el carrito");
+                }
             } else {
-                alert("Ese producto ya está en el carrito");
+                alert("no has iniciado seccion")
             }
         });
 
