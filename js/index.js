@@ -7,9 +7,14 @@ import {
 window.addEventListener("DOMContentLoaded", inicializarIndex);
 
 function inicializarIndex() {
-    console.log("ding dom dom dom - index");
+    console.log("inicializando index...");
     inicializarProductos();
     renderizarProductos();
+
+    const inputFiltrar = document.getElementById("inputFiltrarProducto");
+    if (inputFiltrar) {
+        inputFiltrar.addEventListener("input", renderizarProductos);
+    }
 }
 
 function renderizarProductos() {
@@ -21,8 +26,16 @@ function renderizarProductos() {
         return;
     }
 
-    const productos = obtenerProductos();
-    console.log("productos para pintar en index:", productos);
+    const inputFiltrar = document.getElementById("inputFiltrarProducto");
+    const filtro = inputFiltrar ? inputFiltrar.value.toLowerCase().trim() : "";
+
+    const todosLosProductos = obtenerProductos();
+    console.log("todos los productos:", todosLosProductos);
+
+    // Filtrar productos por nombre si hay texto en el input
+    const productos = todosLosProductos.filter(function (producto) {
+        return producto.nombre.toLowerCase().includes(filtro);
+    });
 
     contenedorCards.innerHTML = "";
 
@@ -31,10 +44,9 @@ function renderizarProductos() {
         mensaje.className = "col-12 text-center mt-5";
         mensaje.innerHTML = `
             <div class="alert alert-warning mx-auto w-75">
-                No hay productos cargados todavía.
+                ${filtro ? "No se encontraron productos que coincidan con la búsqueda." : "No hay productos cargados todavía."}
             </div>
         `;
-
         contenedorCards.appendChild(mensaje);
         return;
     }

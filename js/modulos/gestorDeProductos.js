@@ -47,6 +47,10 @@ export function obtenerProductos() {
     return obtenerArreglo(clave_productos_ls);
 }
 
+export function listarProductos() {
+    return obtenerProductos();
+}
+
 export function obtenerProductoPorId(idProducto) {
     console.log("buscando producto por id:", idProducto);
     let productos = obtenerArreglo(clave_productos_ls);

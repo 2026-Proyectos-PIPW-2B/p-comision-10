@@ -2,17 +2,14 @@ import { obtenerUsuarios } from "./modulos/gestorDeUsuarios.js";
 
 import { iniciarSesion } from "./modulos/gestorSesion.js";
 
-// Eduardo, soy el profe, esta llamada deberia estar realizada posiblemente desde
-// la funcion asociada al evento DOMContentLoaded
-// Fijate si corresponde invocarla o no, pero no deberia estar suelta entre medio de las
-// definiciones de otras funciones
-// aplicarTema(obtenerTemaPreferido());
 
 window.addEventListener("DOMContentLoaded", function () {
     inicializarTema()
     inicializarLogin()
 });
 
+//totalmente robado
+//poner pagina modo oscuro o claro
 function inicializarTema(){
     const iconoPrincipal = document.querySelector("#bd-theme use");
     const botonesOpciones = document.querySelectorAll("[data-bs-theme-value]");
@@ -20,30 +17,49 @@ function inicializarTema(){
     botonesOpciones.forEach(function (boton) {
         boton.addEventListener("click", function () {
             const temaSeleccionado = boton.getAttribute("data-bs-theme-value");
-            console.log("click en ....", temaSeleccionado);
 
             localStorage.setItem("theme", temaSeleccionado);
-            console.log("al localStorage jeje:", temaSeleccionado);
 
-            aplicarTema(temaSeleccionado);
-            console.log("actuzliado o.O");
+            aplicarTema(temaSeleccionado);;
 
             const iconoDelBotonPresionado = boton.querySelector("use").getAttribute("href");
             iconoPrincipal.setAttribute("href", iconoDelBotonPresionado);
-            console.log("se cambio el boton....", iconoDelBotonPresionado);
         });
     });
 
     const temaActual = obtenerTemaPreferido();
-    console.log("tema inicial:", temaActual);
+    aplicarTema(temaActual);
 
     const botonActivo = document.querySelector(`[data-bs-theme-value="${temaActual}"]`);
     if (botonActivo) {
         const iconoActivo = botonActivo.querySelector("use").getAttribute("href");
         iconoPrincipal.setAttribute("href", iconoActivo);
-        console.log("seteadooo!!!");
     }
 }
+
+function obtenerTemaPreferido() {
+    const guardado = localStorage.getItem("theme");
+    if (guardado) {
+        return guardado;
+    }
+
+    const prefiereOscuro = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    return prefiereOscuro ? "dark" : "light";
+}
+
+function aplicarTema(tema) {
+    let temaReal = tema;
+
+    if (tema === "auto") {
+        const prefiereOscuro = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        temaReal = prefiereOscuro ? "dark" : "light";
+    }
+
+    document.documentElement.setAttribute("data-bs-theme", temaReal);
+}
+
+//de aca en adelante ya no es robado
+
 
 function inicializarLogin(){
   const formulario = document.querySelector("form");
@@ -68,30 +84,6 @@ function inicializarLogin(){
             }
         });
     }
-}
-
-function obtenerTemaPreferido() {
-    const guardado = localStorage.getItem("theme");
-    if (guardado) {
-        console.log("esta el tema en el localStorage:", guardado);
-        return guardado;
-    }
-
-    const prefiereOscuro = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    console.log("mmmmm. ¿está oscuro?:", prefiereOscuro);
-    return prefiereOscuro ? "dark" : "light";
-}
-
-function aplicarTema(tema) {
-    let temaReal = tema;
-
-    if (tema === "auto") {
-        const prefiereOscuro = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        temaReal = prefiereOscuro ? "dark" : "light";
-        console.log("Modo auto activado. Se eligió:", temaReal);
-    }
-
-    document.documentElement.setAttribute("data-bs-theme", temaReal);
 }
 
 function limpiarEstados() {
