@@ -47,16 +47,19 @@ function agregarProductoEnContenedor(producto) {
     liPrecio.textContent = producto.precio
     liStock.textContent = producto.stock
     buttonBorrar.className = "btn btn-warning form-control"
+    buttonBorrar.type = "button"
     buttonBorrar.textContent = "Borrar"
     form.className = "mt-3"
     DivDeForm.className = "input-group mb-3"
     spanMas.className = "input-group-text border-0 text-bg-danger"
     botonMas.className = "btn btn-warning btnMas"
+    botonMas.type = "button"
     botonMas.textContent = "+"
     input.className = "form-control border-dark"
     input.type = "number"
     spanMenos.className = "input-group-text border-0 text-bg-danger"
     botonMenos.className = "btn btn-warning btnMenos"
+    botonMenos.type = "button"
     botonMenos.textContent = "-"
 
     ul.appendChild(liNombre)
@@ -116,7 +119,6 @@ function comprarProductos() {
         }
     })
 }
-
 
 
 

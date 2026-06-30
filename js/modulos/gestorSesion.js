@@ -27,6 +27,8 @@ export function existeUsuarioLogueado() {
 
 export function cerrarSesion() {
     eliminarValor(clave_sesion_ls)
+    localStorage.setItem("usuario_logueado", "false")
+    localStorage.removeItem("usuario_activo")
 }
 
 function setearInicioSesion(usuario) {
@@ -35,4 +37,18 @@ function setearInicioSesion(usuario) {
         carrito: [],
     }
     setearValor(clave_sesion_ls, objetoSesion)
+    localStorage.setItem("usuario_logueado", "true")
+    localStorage.setItem("usuario_activo", JSON.stringify(usuario))
+}
+
+export function actualizarSesionActiva(usuario) {
+    const sesionActiva = obtenerValor(clave_sesion_ls)
+
+    if (!sesionActiva) {
+        return
+    }
+
+    sesionActiva.usuario = usuario
+    setearValor(clave_sesion_ls, sesionActiva)
+    localStorage.setItem("usuario_activo", JSON.stringify(usuario))
 }

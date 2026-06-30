@@ -30,6 +30,7 @@ function inicializarTema() {
     });
 
     const temaActual = obtenerTemaPreferido();
+    aplicarTema(temaActual);
 
     const botonActivo = document.querySelector(`[data-bs-theme-value="${temaActual}"]`);
     if (botonActivo) {
@@ -141,7 +142,7 @@ function inicializarUsuarios() {
         telefono: 12345678910,
         email: "hola@gmial.com",
         password: "hola",
-        rol: "admi",
+        rol: "administrador",
     },
     {
         id: 2,
