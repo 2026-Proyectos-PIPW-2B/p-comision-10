@@ -1,6 +1,10 @@
 import { cerrarSesion } from "./gestorSesion.js";
 
 const enlacesDelMenu = {
+    principio: {
+        texto: "Comienzo",
+        href: "index.html",
+    },
     carrito: {
         texto: "Carrito de compras",
         href: "carrito.html",
@@ -78,12 +82,14 @@ function obtenerUsuarioActivo() {
 function obtenerEnlacesDelUsuario(usuarioActivo) {
     if (!usuarioActivo) {
         return [
+            enlacesDelMenu.principio,
             enlacesDelMenu.carrito,
             enlacesDelMenu.login,
         ];
     }
     if (usuarioActivo.rol === "admin") {
         return [
+            enlacesDelMenu.principio,
             enlacesDelMenu.crearProductos,
             enlacesDelMenu.editarProductos,
             enlacesDelMenu.usuarios,
@@ -96,6 +102,7 @@ function obtenerEnlacesDelUsuario(usuarioActivo) {
     }
 
     return [
+        enlacesDelMenu.principio,
         enlacesDelMenu.carrito,
         enlacesDelMenu.historial,
         enlacesDelMenu.perfil,
