@@ -1,19 +1,41 @@
-import {obtenerValor, setearValor} from "./gestorLocalstorage.js";
+import { obtenerArreglo, setearArreglo } from "./gestorLocalstorage.js";
 
 const clave_usuarios_ls = "usuarios";
+const usuariosEjemplo = [
+    {
+        id: "u1",
+        nombreCompleto: "Admin Burguer",
+        direccion: "Casa central 123",
+        telefono: "3410000000",
+        email: "admin@piwp.com",
+        password: "1234",
+        rol: "admin",
+    },
+    {
+        id: "u2",
+        nombreCompleto: "Cliente Prueba",
+        direccion: "Calle Falsa 123",
+        telefono: "3411111111",
+        email: "cliente@piwp.com",
+        password: "1234",
+        rol: "cliente",
+    },
+];
+
+inicializarUsuariosDePrueba();
 
 export function agregarUsuario(nombreCompleto, direccion, telefono, email, password, rol) {
-    let usuarios = obtenerValor(clave_usuarios_ls) || [] ;
+    let usuarios = obtenerArreglo(clave_usuarios_ls);
     let usuario = crearUsuario(nombreCompleto, direccion, telefono, email, password, rol);
     usuarios.push(usuario);
-    setearValor(clave_usuarios_ls, usuarios);
+    setearArreglo(clave_usuarios_ls, usuarios);
 }
 
 export function agregarUsuarioNuevaContraseña(password) {
-    let usuarios = obtenerValor(clave_usuarios_ls) || [];
+    let usuarios = obtenerArreglo(clave_usuarios_ls);
     let usuario = crearUsuario(password);
     usuarios.push(usuario);
-    setearValor(clave_usuarios_ls, usuarios);
+    setearArreglo(clave_usuarios_ls, usuarios);
 }
 
 export function buscarUsuarioPorEmail(email) {
@@ -24,7 +46,7 @@ export function buscarUsuarioPorEmail(email) {
 }
 
 export function editarUsuario(usuarioEditado) {
-    let usuarios = obtenerValor(clave_usuarios_ls) || [];
+    let usuarios = obtenerArreglo(clave_usuarios_ls);
     let indice = usuarios.findIndex(function (usuario) {
         return usuario.id === usuarioEditado.id;
     });
@@ -34,23 +56,23 @@ export function editarUsuario(usuarioEditado) {
     }
 
     usuarios[indice] = usuarioEditado;
-    setearValor(clave_usuarios_ls, usuarios);
+    setearArreglo(clave_usuarios_ls, usuarios);
     return true;
 }
 
 export function obtenerUsuarios() {
-    return obtenerValor(clave_usuarios_ls) || [];
+    return obtenerArreglo(clave_usuarios_ls);
 }
 
 export function obtenerUsuarioPorId(idUsuario) {
-    let usuarios = obtenerValor(clave_usuarios_ls) || [];
+    let usuarios = obtenerArreglo(clave_usuarios_ls);
     return usuarios.find(function (usuario) {
         return usuario.id === idUsuario;
     });
 }
 
 export function eliminarUsuario(idUsuario) {
-    let usuarios = obtenerValor(clave_usuarios_ls);
+    let usuarios = obtenerArreglo(clave_usuarios_ls);
     let usuariosFiltrados = usuarios.filter(function (usuario) {
         return usuario.id !== idUsuario;
     });
@@ -59,13 +81,14 @@ export function eliminarUsuario(idUsuario) {
     if (usuarioActivo && usuarioActivo.id === idUsuario) {
         localStorage.removeItem("usuario_activo");
         localStorage.setItem("usuario_logueado", "false");
+        localStorage.removeItem("sesion_activa");
     }
 
-    setearValor(clave_usuarios_ls, usuariosFiltrados);
+    setearArreglo(clave_usuarios_ls, usuariosFiltrados);
 }
 
 export function existeUsuario(email, idUsuario = null) {
-    let usuarios = obtenerValor(clave_usuarios_ls);
+    let usuarios = obtenerArreglo(clave_usuarios_ls);
     let existe = false;
 
     for (let i = 0; i < usuarios.length; i++) {
@@ -94,6 +117,15 @@ function crearUsuario(nombreCompleto, direccion, telefono, email, password, rol)
 
 function generarID() {
     return `u${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
+}
+
+function inicializarUsuariosDePrueba() {
+    let usuarios = obtenerArreglo(clave_usuarios_ls);
+
+    if (usuarios.length === 0) {
+        console.log("cargando usuarios de prueba");
+        setearArreglo(clave_usuarios_ls, usuariosEjemplo);
+    }
 }
 
 //function para verificar si es administrador o cliente

@@ -2,6 +2,7 @@ import { obtenerUsuarios } from "./modulos/gestorDeUsuarios.js";
 
 import { iniciarSesion } from "./modulos/gestorSesion.js";
 
+
 window.addEventListener("DOMContentLoaded", function () {
     inicializarTema()
     inicializarLogin()
@@ -27,6 +28,7 @@ function inicializarTema(){
     });
 
     const temaActual = obtenerTemaPreferido();
+    aplicarTema(temaActual);
 
     const botonActivo = document.querySelector(`[data-bs-theme-value="${temaActual}"]`);
     if (botonActivo) {

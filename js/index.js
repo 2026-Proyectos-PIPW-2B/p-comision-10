@@ -1,23 +1,20 @@
-import { agregarElementoAlCarrito, listarProductos } from "./modulos/gestorDeProductos.js"
+import {
+    agregarElementoAlCarrito,
+    inicializarProductos,
+    obtenerProductos,
+} from "./modulos/gestorDeProductos.js";
 
-window.addEventListener("DOMContentLoaded", function () {
-    mostrarCardsEnIndex()
-    filtrarProductos()
-})
-
-function mostrarCardsEnIndex() {
-    const productos = listarProductos()
-
-    for (let i = 0; i < productos.length; i++) {
-        let producto = productos[i]
-        agregarProductoEnContenedor(producto)
-    }
-}
+window.addEventListener("DOMContentLoaded", inicializarIndex);
 
 function inicializarIndex() {
-    console.log("ding dom dom dom - index");
+    console.log("inicializando index...");
     inicializarProductos();
     renderizarProductos();
+
+    const inputFiltrar = document.getElementById("inputFiltrarProducto");
+    if (inputFiltrar) {
+        inputFiltrar.addEventListener("input", renderizarProductos);
+    }
 }
 
 function renderizarProductos() {
@@ -29,8 +26,16 @@ function renderizarProductos() {
         return;
     }
 
-    const productos = obtenerProductos();
-    console.log("productos para pintar en index:", productos);
+    const inputFiltrar = document.getElementById("inputFiltrarProducto");
+    const filtro = inputFiltrar ? inputFiltrar.value.toLowerCase().trim() : "";
+
+    const todosLosProductos = obtenerProductos();
+    console.log("todos los productos:", todosLosProductos);
+
+    // Filtrar productos por nombre si hay texto en el input
+    const productos = todosLosProductos.filter(function (producto) {
+        return producto.nombre.toLowerCase().includes(filtro);
+    });
 
     contenedorCards.innerHTML = "";
 
@@ -39,75 +44,66 @@ function renderizarProductos() {
         mensaje.className = "col-12 text-center mt-5";
         mensaje.innerHTML = `
             <div class="alert alert-warning mx-auto w-75">
-                No hay productos cargados todavía.
+                ${filtro ? "No se encontraron productos que coincidan con la búsqueda." : "No hay productos cargados todavía."}
             </div>
         `;
-
         contenedorCards.appendChild(mensaje);
         return;
     }
-}
 
-function agregarProductoEnContenedor(producto) {
-    const divContenedorCards = document.getElementById("divContenedorCards")
+    for (let i = 0; i < productos.length; i++) {
+        const producto = productos[i];
+        const card = document.createElement("div");
+        const imagen = document.createElement("img");
+        const body = document.createElement("div");
+        const lista = document.createElement("ul");
+        const nombre = document.createElement("li");
+        const descripcion = document.createElement("li");
+        const precio = document.createElement("li");
+        const stock = document.createElement("li");
+        const boton = document.createElement("button");
 
-    const divCard = document.createElement("div")
-    const imagen = document.createElement("img")
-    const divCardBody = document.createElement("div")
-    const ul = document.createElement("ul")
-    const liNombre = document.createElement("li")
-    const liDescripcion = document.createElement("li")
-    const liPrecio = document.createElement("li")
-    const liStock = document.createElement("li")
-    const button = document.createElement("button")
+        card.className = "card col-10 col-sm-8 col-md-5 col-xl-3 m-5 text-bg-danger";
+        imagen.src = producto.imagen;
+        imagen.alt = producto.nombre;
+        imagen.className = "img-fluid mt-2";
+        imagen.style.objectFit = "cover";
+        imagen.style.height = "220px";
+        body.className = "card-body";
+        lista.className = "list-unstyled";
+        nombre.innerHTML = `<strong>${producto.nombre}</strong>`;
+        descripcion.textContent = producto.descripcion;
+        precio.textContent = formatearPrecio(producto.precio);
+        stock.textContent = `stock: ${producto.stock}`;
+        boton.className = "btn btn-warning form-control";
+        boton.type = "button";
+        boton.textContent = "agregar";
 
-    divCard.className = "card col-10 col-sm-8 col-md-5 col-xl-3 m-5 text-bg-danger"
-    imagen.src = producto.imagen
-    imagen.className = "img-fluid mt-2"
-    divCardBody.className = "card-body"
-    ul.className = "list-unstyled"
-    liNombre.textContent = producto.nombre
-    liDescripcion.textContent = producto.descripcion
-    liPrecio.textContent = producto.precio
-    liStock.textContent = producto.stock
-    button.className = "btn btn-warning form-control"
-    button.textContent = "Agregar"
+        boton.addEventListener("click", function () {
+            console.log("click en agregar producto:", producto.id);
+            const seAgrego = agregarElementoAlCarrito(producto.id);
 
-    ul.appendChild(liNombre)
-    ul.appendChild(liDescripcion)
-    ul.appendChild(liPrecio)
-    ul.appendChild(liStock)
-    divCardBody.appendChild(ul)
-    divCardBody.appendChild(button)
-    divCard.appendChild(imagen)
-    divCard.appendChild(divCardBody)
-
-    divContenedorCards.appendChild(divCard)
-
-    const botonAgregar = divCard.querySelector("button")
-
-    botonAgregar.addEventListener("click", function () {
-        agregarElementoAlCarrito(producto.id)
-    })
-}
-
-function filtrarProductos() {
-    const divContenedorCards = document.getElementById("divContenedorCards")
-    const input = document.getElementById("inputFiltrarProducto")
-    const cardsProductos = listarProductos()
-
-    const arrayParaFiltrar = []
-
-    input.addEventListener("input", function () {
-        const productoFiltrado = document.getElementById("inputFiltrarProducto").value.toLowerCase().trim()
-
-        for (let i = 0; i < cardsProductos.length; i++) {
-            if (productoFiltrado.includes(input)) {
-                divContenedorCards.innerHTML = ""
-                arrayParaFiltrar.push(cardsProductos[i])
-                agregarProductoEnContenedor(arrayParaFiltrar)
+            if (seAgrego) {
+                alert(`Se agregó ${producto.nombre} al carrito`);
+            } else {
+                alert("Ese producto ya está en el carrito");
             }
-        }
-    })
+        });
+
+        lista.appendChild(nombre);
+        lista.appendChild(descripcion);
+        lista.appendChild(precio);
+        lista.appendChild(stock);
+        body.appendChild(lista);
+        body.appendChild(boton);
+        card.appendChild(imagen);
+        card.appendChild(body);
+        contenedorCards.appendChild(card);
+
+        console.log("producto pintado en index:", producto.id);
+    }
 }
 
+function formatearPrecio(precio) {
+    return `$${Number(precio).toLocaleString("es-AR")}`;
+}

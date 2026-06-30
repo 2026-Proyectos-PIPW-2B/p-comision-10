@@ -5,6 +5,7 @@ import {
     obtenerUsuarioPorId,
     obtenerUsuarios,
 } from "./modulos/gestorDeUsuarios.js";
+import { actualizarSesionActiva } from "./modulos/gestorSesion.js";
 
 window.addEventListener("DOMContentLoaded", inicializarUsuarios)
 
@@ -182,6 +183,7 @@ function actualizarUsuarioActivo(usuarioEditado) {
 
     if (usuarioActivo && usuarioActivo.id === usuarioEditado.id) {
         localStorage.setItem("usuario_activo", JSON.stringify(usuarioEditado));
+        actualizarSesionActiva(usuarioEditado);
     }
 }
 
