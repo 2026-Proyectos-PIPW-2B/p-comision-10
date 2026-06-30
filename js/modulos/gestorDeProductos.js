@@ -1,6 +1,8 @@
 import { obtenerArreglo, setearArreglo } from "./gestorLocalstorage.js";
 
 const clave_productos_ls = "productos";
+const clave_productos_carrito_ls = "productosCarrito";
+const clave_productos_comprados_ls = "productosComprados";
 
 const productosEjemplo = [
     {
@@ -88,6 +90,55 @@ export function eliminarProducto(idProducto) {
     });
 
     setearArreglo(clave_productos_ls, productosFiltrados);
+}
+
+export function agregarElementoAlCarrito(idProducto) {
+    let productos = obtenerArreglo(clave_productos_ls);
+    let productosCarrito = obtenerArreglo(clave_productos_carrito_ls);
+
+    let producto = productos.find(function (producto) {
+        return producto.id === idProducto;
+    });
+
+    let productoExiste = productosCarrito.find(function (producto) {
+        return producto.id === idProducto;
+    });
+
+    if (producto && !productoExiste) {
+        productosCarrito.push(producto);
+        setearArreglo(clave_productos_carrito_ls, productosCarrito);
+        return true;
+    }
+
+    return false;
+}
+
+export function obtenerElementosDelCarrito() {
+    return obtenerArreglo(clave_productos_carrito_ls);
+}
+
+export function eliminarProductoCarrito(idProducto) {
+    let productos = obtenerArreglo(clave_productos_carrito_ls);
+    let productosFiltrados = productos.filter(function (producto) {
+        return producto.id !== idProducto;
+    });
+
+    setearArreglo(clave_productos_carrito_ls, productosFiltrados);
+}
+
+export function agregarProductoHistorial(producto) {
+    let productosComprados = obtenerArreglo(clave_productos_comprados_ls);
+    let productoComprado = {
+        ...producto,
+        fecha: new Date().toLocaleDateString("es-AR"),
+    };
+
+    productosComprados.push(productoComprado);
+    setearArreglo(clave_productos_comprados_ls, productosComprados);
+}
+
+export function obtenerElementosDelHistorial() {
+    return obtenerArreglo(clave_productos_comprados_ls);
 }
 
 function crearProducto(nombre, descripcion, stock, precio, imagen) {

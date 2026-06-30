@@ -1,10 +1,8 @@
 import {
+    agregarElementoAlCarrito,
     inicializarProductos,
     obtenerProductos,
 } from "./modulos/gestorDeProductos.js";
-// tenemos que poner un ls para el carrito
-// no recuordo haberlo visto
-// preguntarle a Angle
 
 window.addEventListener("DOMContentLoaded", inicializarIndex);
 
@@ -71,7 +69,13 @@ function renderizarProductos() {
 
         boton.addEventListener("click", function () {
             console.log("click en agregar producto:", producto.id);
-            alert(`Se agregó ${producto.nombre}`);
+            const seAgrego = agregarElementoAlCarrito(producto.id);
+
+            if (seAgrego) {
+                alert(`Se agregó ${producto.nombre} al carrito`);
+            } else {
+                alert("Ese producto ya está en el carrito");
+            }
         });
 
         lista.appendChild(nombre);
