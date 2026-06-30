@@ -2,14 +2,17 @@ import { obtenerUsuarios } from "./modulos/gestorDeUsuarios.js";
 
 import { iniciarSesion } from "./modulos/gestorSesion.js";
 
+import { setearValor } from "./modulos/gestorLocalstorage.js";
+
 window.addEventListener("DOMContentLoaded", function () {
     inicializarTema()
     inicializarLogin()
+    inicializarTodo()
 });
 
 //totalmente robado
 //poner pagina modo oscuro o claro
-function inicializarTema(){
+function inicializarTema() {
     const iconoPrincipal = document.querySelector("#bd-theme use");
     const botonesOpciones = document.querySelectorAll("[data-bs-theme-value]");
 
@@ -59,8 +62,8 @@ function aplicarTema(tema) {
 //de aca en adelante ya no es robado
 
 
-function inicializarLogin(){
-  const formulario = document.querySelector("form");
+function inicializarLogin() {
+    const formulario = document.querySelector("form");
 
     if (formulario) {
         formulario.addEventListener("submit", function (evento) {
@@ -75,13 +78,83 @@ function inicializarLogin(){
             limpiarEstados();
             validarDatos(email, password, inputEmail, inputPassword);
 
-            if (iniciarSesion(email, password)){
+            if (iniciarSesion(email, password)) {
                 window.location.href = "index.html";
-            }else{
+            } else {
                 mostrarPasswordIncorrecto(inputPassword)
             }
         });
     }
+}
+
+function inicializarTodo() {
+    const inicializar = document.getElementById("Inicializar")
+    inicializar.addEventListener("click", function () {
+        inicializarProductos()
+        inicializarUsuarios()
+    })
+}
+
+function inicializarProductos() {
+    const clave_productos_ls = "productos";
+
+    const productos = [
+        {
+            id: "1",
+            nombre: "Hamburguesa Clásica",
+            descripcion: "La hamburguesa de siempre, al estilo Burguer PIWP.",
+            stock: 190,
+            precio: 5000,
+            imagen: "imagenes/OIP.webp",
+            fecha: "",
+        },
+        {
+            id: "2",
+            nombre: "Hamburguesa Doble",
+            descripcion: "Más carne, más sabor y más ganas de repetir.",
+            stock: 120,
+            precio: 6800,
+            imagen: "imagenes/OIP (1).webp",
+            fecha: "",
+        },
+        {
+            id: "3",
+            nombre: "Hamburguesa Vegana",
+            descripcion: "Una opción más liviana sin perder el estilo.",
+            stock: 75,
+            precio: 6200,
+            imagen: "imagenes/descarga.webp",
+            fecha: "",
+        },
+    ];
+
+    setearValor(clave_productos_ls, productos)
+}
+
+function inicializarUsuarios() {
+    const clave_usuarios_ls = "usuarios"
+
+    const usuario = [{
+        id: 1,
+        nombreCompleto: "pablo",
+        direccion: "calle 123",
+        telefono: 12345678910,
+        email: "hola@gmial.com",
+        password: "hola",
+        rol: "admi",
+    },
+    {
+        id: 2,
+        nombreCompleto: "juan",
+        direccion: "321 calle",
+        telefono: 10986754321,
+        email: "soyunemail@gmail.com",
+        password: "chau",
+        rol: "cliente",
+    }
+    ];
+
+    setearValor(clave_usuarios_ls, usuario)
 }
 
 function limpiarEstados() {
@@ -118,7 +191,7 @@ function validarPassword(inputPassword, password) {
     }
 }
 
-function mostrarPasswordIncorrecto(inputPassword){
+function mostrarPasswordIncorrecto(inputPassword) {
     inputPassword.classList.add("is-invalid")
     inputPassword.value = ""
 }
