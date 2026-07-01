@@ -1,4 +1,4 @@
-import { obtenerElementosDelCarrito, eliminarProductoCarrito, agregarProductoHistorial} from "./modulos/gestorDeProductos.js"
+import { obtenerElementosDelCarrito, eliminarProductoCarrito, agregarProductoHistorial, descontarStockProducto } from "./modulos/gestorDeProductos.js"
 
 window.addEventListener("DOMContentLoaded", function () {
     mostrarCardsEnCarrito()
@@ -45,7 +45,7 @@ function agregarProductoEnContenedor(producto) {
     liNombre.textContent = producto.nombre
     liDescripcion.textContent = producto.descripcion
     liPrecio.textContent = producto.precio
-    liStock.textContent = producto.stock
+    liStock.textContent = "stock: " + producto.stock
     buttonBorrar.className = "btn btn-warning form-control"
     buttonBorrar.type = "button"
     buttonBorrar.textContent = "Borrar"
@@ -57,6 +57,10 @@ function agregarProductoEnContenedor(producto) {
     botonMas.textContent = "+"
     input.className = "form-control border-dark"
     input.type = "number"
+    input.value = 1
+    input.min = 1
+    input.max = producto.stock
+    input.setAttribute("data-id", producto.id)
     spanMenos.className = "input-group-text border-0 text-bg-danger"
     botonMenos.className = "btn btn-warning btnMenos"
     botonMenos.type = "button"
@@ -81,30 +85,62 @@ function agregarProductoEnContenedor(producto) {
     divContenedorDeCards.appendChild(divCard)
 
     const botonBorrar = divCard.querySelector("button")
+    const inputCantidad = divCard.querySelector("input")
+    const btnMenos = divCard.querySelector(".btnMenos")
+    const btnMas = divCard.querySelector(".btnMas")
 
     botonBorrar.addEventListener("click", function () {
         eliminarProductoCarrito(producto.id)
         mostrarCardsEnCarrito()
     })
 
+    btnMas.addEventListener("click", function () {
+        let cantidadActual = Number(inputCantidad.value)
+        if (cantidadActual < producto.stock) {
+            inputCantidad.value = cantidadActual + 1
+        }
+    })
+
+    btnMenos.addEventListener("click", function () {
+        let cantidadActual = Number(inputCantidad.value)
+        if (cantidadActual > 1) {
+            inputCantidad.value = cantidadActual - 1
+        }
+    })
 }
 
 function comprarProductos() {
-    const comprarProductos = document.getElementById("comprarProductos")
+    const botonComprar = document.getElementById("comprarProductos")
 
-    comprarProductos.addEventListener("click", function () {
+    botonComprar.addEventListener("click", function () {
         const productos = obtenerElementosDelCarrito()
+
+        if (productos.length === 0) {
+            alert("tu carrito esta vacio")
+            return
+        }
 
         alert("tu compra ah sido exitosa")
 
         for (let i = 0; i < productos.length; i++) {
             let producto = productos[i]
-            agregarProductoHistorial(producto)
+
+            // leer la cantidad elegida por el usuario en el input
+            const inputCantidad = document.querySelector("input[data-id='" + producto.id + "']")
+            let cantidad = 1
+            if (inputCantidad) {
+                cantidad = Number(inputCantidad.value)
+            }
+
+            // descontar el stock del producto en el almacen
+            descontarStockProducto(producto.id, cantidad)
+
+            // guardar en historial con la cantidad comprada
+            agregarProductoHistorial(producto, cantidad)
+
             eliminarProductoCarrito(producto.id)
-            mostrarCardsEnCarrito()
         }
+
+        mostrarCardsEnCarrito()
     })
 }
-
-
-
