@@ -6,6 +6,7 @@ import {
     obtenerUsuarioPorId,
     obtenerUsuarios,
 } from "./modulos/gestorDeUsuarios.js";
+import { actualizarSesionActiva } from "./modulos/gestorSesion.js";
 
 window.addEventListener("DOMContentLoaded", function () {
     console.log("ding dom dom dom - usuarios");
@@ -202,6 +203,7 @@ function actualizarUsuarioActivo(usuarioEditado) {
     if (usuarioActivo && usuarioActivo.id === usuarioEditado.id) {
         console.log("actualizando usuario activo");
         localStorage.setItem("usuario_activo", JSON.stringify(usuarioEditado));
+        actualizarSesionActiva(usuarioEditado);
     }
 }
 

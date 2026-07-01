@@ -1,52 +1,51 @@
-import {
-    obtenerUsuarios,
-} from "./modulos/gestorDeUsuarios.js";
+import { obtenerUsuarios } from "./modulos/gestorDeUsuarios.js";
 
-// totalmente robado jajaja
+import { iniciarSesion } from "./modulos/gestorSesion.js";
+
+import { setearValor } from "./modulos/gestorLocalstorage.js";
+
 window.addEventListener("DOMContentLoaded", function () {
-    console.log("ding dom dom dom");
-    inicializarUsuarios();
+    inicializarTema()
+    inicializarLogin()
+    inicializarTodo()
+});
 
+//totalmente robado
+//poner pagina modo oscuro o claro
+function inicializarTema() {
     const iconoPrincipal = document.querySelector("#bd-theme use");
     const botonesOpciones = document.querySelectorAll("[data-bs-theme-value]");
 
     botonesOpciones.forEach(function (boton) {
         boton.addEventListener("click", function () {
             const temaSeleccionado = boton.getAttribute("data-bs-theme-value");
-            console.log("click en ....", temaSeleccionado);
 
             localStorage.setItem("theme", temaSeleccionado);
-            console.log("al localStorage jeje:", temaSeleccionado);
 
-            aplicarTema(temaSeleccionado);
-            console.log("actuzliado o.O");
+            aplicarTema(temaSeleccionado);;
 
             const iconoDelBotonPresionado = boton.querySelector("use").getAttribute("href");
             iconoPrincipal.setAttribute("href", iconoDelBotonPresionado);
-            console.log("se cambio el boton....", iconoDelBotonPresionado);
         });
     });
 
     const temaActual = obtenerTemaPreferido();
-    console.log("tema inicial:", temaActual);
+    aplicarTema(temaActual);
 
     const botonActivo = document.querySelector(`[data-bs-theme-value="${temaActual}"]`);
     if (botonActivo) {
         const iconoActivo = botonActivo.querySelector("use").getAttribute("href");
         iconoPrincipal.setAttribute("href", iconoActivo);
-        console.log("seteadooo!!!");
     }
-});
+}
 
 function obtenerTemaPreferido() {
     const guardado = localStorage.getItem("theme");
     if (guardado) {
-        console.log("esta el tema en el localStorage:", guardado);
         return guardado;
     }
 
     const prefiereOscuro = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    console.log("mmmmm. ¿está oscuro?:", prefiereOscuro);
     return prefiereOscuro ? "dark" : "light";
 }
 
@@ -56,24 +55,16 @@ function aplicarTema(tema) {
     if (tema === "auto") {
         const prefiereOscuro = window.matchMedia("(prefers-color-scheme: dark)").matches;
         temaReal = prefiereOscuro ? "dark" : "light";
-        console.log("Modo auto activado. Se eligió:", temaReal);
     }
 
     document.documentElement.setAttribute("data-bs-theme", temaReal);
 }
 
-aplicarTema(obtenerTemaPreferido());
+//de aca en adelante ya no es robado
 
-//
 
-window.addEventListener("DOMContentLoaded", inicializarLogin)
-
-function inicializarLogin(){
-    validarLogin()
-}
-
-function validarLogin(){
-  const formulario = document.querySelector("form");
+function inicializarLogin() {
+    const formulario = document.querySelector("form");
 
     if (formulario) {
         formulario.addEventListener("submit", function (evento) {
@@ -88,32 +79,119 @@ function validarLogin(){
             limpiarEstados();
             validarDatos(email, password, inputEmail, inputPassword);
 
-            const usuarioEncontrado = buscarUsuarioPorCredenciales(email, password);
-
-            if (usuarioEncontrado) {
-                alert("¡Bienvenido... al paraiso!");
-                limpiarEstados();
-                localStorage.setItem("usuario_logueado", "true");
-                localStorage.setItem("usuario_activo", JSON.stringify(usuarioEncontrado));
-
-                if (document.referrer) {
-                    window.history.back();
-                } else {
-                    window.location.href = "index.html";
-                }
+            if (iniciarSesion(email, password)) {
+                window.location.href = "index.html";
             } else {
-                localStorage.setItem("usuario_logueado", "false");
-                alert("¡No no, le pifiaste!");
+                mostrarPasswordIncorrecto(inputPassword)
             }
         });
     }
 }
 
-function buscarUsuarioPorCredenciales(email, password) {
-    const usuarios = obtenerUsuarios();
-    return usuarios.find(function (usuario) {
-        return usuario.email === email && usuario.password === password;
-    });
+function inicializarTodo() {
+    const inicializar = document.getElementById("Inicializar")
+    inicializar.addEventListener("click", function () {
+        inicializarProductos()
+        inicializarUsuarios()
+    })
+}
+
+function inicializarProductos() {
+    const clave_productos_ls = "productos";
+
+    const productos = [
+        {
+            id: "1",
+            nombre: "Hamburguesa Clásica",
+            descripcion: "La hamburguesa de siempre, al estilo Burguer PIWP.",
+            stock: 190,
+            precio: 5000,
+            imagen: "imagenes/OIP.webp",
+            fecha: "",
+        },
+        {
+            id: "2",
+            nombre: "Hamburguesa Doble",
+            descripcion: "Más carne, más sabor y más ganas de repetir.",
+            stock: 120,
+            precio: 6800,
+            imagen: "imagenes/OIP (1).webp",
+            fecha: "",
+        },
+        {
+            id: "3",
+            nombre: "Hamburguesa Vegana",
+            descripcion: "Una opción más liviana sin perder el estilo.",
+            stock: 75,
+            precio: 6200,
+            imagen: "imagenes/descarga.webp",
+            fecha: "",
+        },
+        {
+            id: "4",
+            nombre: "papas fritas clasicas",
+            descripcion: "un rico acompañamiento crocante para tu hamburguesa",
+            stock: 10,
+            precio: 3000,
+            imagen: "imagenes/OIP (4).webp",
+            fecha: "",
+        },
+        {
+            id: "5",
+            nombre: "hamburguesa doblemente vegana",
+            descripcion: "el doble de hojas el doble de vegano",
+            stock: 3,
+            precio: 7000,
+            imagen: "imagenes/descarga (1).webp",
+            fecha: "",
+        },
+        {
+            id: "6",
+            nombre: "monster ",
+            descripcion: "bebida energizante y refrescante ",
+            stock: 100,
+            precio: 3500,
+            imagen: "imagenes/descarga (3).webp",
+            fecha: "",
+        },
+        {
+            id: "7",
+            nombre: "coca-cola ",
+            descripcion: "el tipico refresco que nunca falla",
+            stock: 2,
+            precio: 2000,
+            imagen: "imagenes/descarga (2).webp",
+            fecha: "",
+        },
+    ];
+
+    setearValor(clave_productos_ls, productos)
+}
+
+function inicializarUsuarios() {
+    const clave_usuarios_ls = "usuarios"
+
+    const usuario = [{
+        id: 1,
+        nombreCompleto: "pablo",
+        direccion: "calle 123",
+        telefono: 12345678910,
+        email: "hola@gmial.com",
+        password: "hola",
+        rol: "admin",
+    },
+    {
+        id: 2,
+        nombreCompleto: "juan",
+        direccion: "321 calle",
+        telefono: 10986754321,
+        email: "soyunemail@gmail.com",
+        password: "chau",
+        rol: "cliente",
+    }
+    ];
+
+    setearValor(clave_usuarios_ls, usuario)
 }
 
 function limpiarEstados() {
@@ -148,4 +226,9 @@ function validarPassword(inputPassword, password) {
     } else {
         inputPassword.classList.add("is-valid");
     }
+}
+
+function mostrarPasswordIncorrecto(inputPassword) {
+    inputPassword.classList.add("is-invalid")
+    inputPassword.value = ""
 }
