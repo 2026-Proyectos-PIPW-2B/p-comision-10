@@ -1,8 +1,8 @@
 import { obtenerArreglo, setearArreglo } from "./gestorLocalstorage.js";
 
 const clave_productos_ls = "productos";
-const clave_productos_carrito_ls = "productosCarrito";
-const clave_productos_comprados_ls = "productosComprados";
+const clave_productos_comprados_base = "productosComprados";
+const clave_carrito_base = "productosCarrito";
 
 const productosEjemplo = [
     {
@@ -97,8 +97,15 @@ export function eliminarProducto(idProducto) {
 }
 
 export function agregarElementoAlCarrito(idProducto) {
+    console.log("agregando al carrito:", idProducto);
+    const claveCarrito = obtenerClaveCarritoActiva();
+    if (!claveCarrito) {
+        console.log("carrito no disponible para este usuario");
+        return false;
+    }
+
     let productos = obtenerArreglo(clave_productos_ls);
-    let productosCarrito = obtenerArreglo(clave_productos_carrito_ls);
+    let productosCarrito = obtenerArreglo(claveCarrito);
 
     let producto = productos.find(function (producto) {
         return producto.id === idProducto;
@@ -108,30 +115,224 @@ export function agregarElementoAlCarrito(idProducto) {
         return producto.id === idProducto;
     });
 
-    if (producto && !productoExiste) {
-        productosCarrito.push(producto);
-        setearArreglo(clave_productos_carrito_ls, productosCarrito);
+    if (!producto) {
+        console.log("no se encontro el producto para agregar");
+        return false;
+    }
+
+    if (producto.stock <= 0) {
+        console.log("producto sin stock:", idProducto);
+        return false;
+    }
+
+    if (!productoExiste) {
+        console.log("producto agregado por primera vez:", idProducto);
+        productosCarrito.push({
+            ...producto,
+            cantidad: 1,
+        });
+        setearArreglo(claveCarrito, productosCarrito);
         return true;
     }
 
-    return false;
+    productoExiste.cantidad = obtenerCantidadNormalizada(productoExiste);
+
+    if (productoExiste.cantidad >= producto.stock) {
+        console.log("no se puede superar el stock:", idProducto);
+        return false;
+    }
+
+    productoExiste.cantidad += 1;
+    console.log("cantidad actualizada en carrito:", idProducto, productoExiste.cantidad);
+    setearArreglo(claveCarrito, productosCarrito);
+    return true;
 }
 
 export function obtenerElementosDelCarrito() {
-    return obtenerArreglo(clave_productos_carrito_ls);
+    console.log("leyendo carrito");
+    const claveCarrito = obtenerClaveCarritoActiva();
+
+    if (!claveCarrito) {
+        console.log("carrito no disponible para este usuario");
+        return [];
+    }
+
+    return obtenerArreglo(claveCarrito);
 }
 
 export function eliminarProductoCarrito(idProducto) {
-    let productos = obtenerArreglo(clave_productos_carrito_ls);
+    console.log("eliminando del carrito:", idProducto);
+    const claveCarrito = obtenerClaveCarritoActiva();
+
+    if (!claveCarrito) {
+        console.log("carrito no disponible para este usuario");
+        return;
+    }
+
+    let productos = obtenerArreglo(claveCarrito);
     let productosFiltrados = productos.filter(function (producto) {
         return producto.id !== idProducto;
     });
 
-    setearArreglo(clave_productos_carrito_ls, productosFiltrados);
+    setearArreglo(claveCarrito, productosFiltrados);
+}
+
+export function aumentarCantidadProductoCarrito(idProducto) {
+    console.log("aumentando cantidad del carrito:", idProducto);
+    const claveCarrito = obtenerClaveCarritoActiva();
+
+    if (!claveCarrito) {
+        console.log("carrito no disponible para este usuario");
+        return false;
+    }
+
+    const productos = obtenerArreglo(claveCarrito);
+    const productoEnCarrito = productos.find(function (producto) {
+        return producto.id === idProducto;
+    });
+
+    if (!productoEnCarrito) {
+        console.log("no se encontro el producto en carrito");
+        return false;
+    }
+
+    if (productoEnCarrito.stock <= 0) {
+        console.log("no hay stock para aumentar:", idProducto);
+        return false;
+    }
+
+    productoEnCarrito.cantidad = obtenerCantidadNormalizada(productoEnCarrito);
+
+    if (productoEnCarrito.cantidad >= productoEnCarrito.stock) {
+        console.log("ya llego al stock maximo:", idProducto);
+        return false;
+    }
+
+    productoEnCarrito.cantidad += 1;
+    console.log("cantidad aumentada:", idProducto, productoEnCarrito.cantidad);
+    setearArreglo(claveCarrito, productos);
+    return true;
+}
+
+export function disminuirCantidadProductoCarrito(idProducto) {
+    console.log("disminuyendo cantidad del carrito:", idProducto);
+    const claveCarrito = obtenerClaveCarritoActiva();
+
+    if (!claveCarrito) {
+        console.log("carrito no disponible para este usuario");
+        return false;
+    }
+
+    const productos = obtenerArreglo(claveCarrito);
+    const productoEnCarrito = productos.find(function (producto) {
+        return producto.id === idProducto;
+    });
+
+    if (!productoEnCarrito) {
+        console.log("no se encontro el producto en carrito");
+        return false;
+    }
+
+    if (productoEnCarrito.cantidad <= 1) {
+        console.log("cantidad minima alcanzada, se elimina:", idProducto);
+        eliminarProductoCarrito(idProducto);
+        return true;
+    }
+
+    productoEnCarrito.cantidad -= 1;
+    console.log("cantidad disminuida:", idProducto, productoEnCarrito.cantidad);
+    setearArreglo(claveCarrito, productos);
+    return true;
+}
+
+export function actualizarCantidadProductoCarrito(idProducto, cantidad) {
+    console.log("actualizando cantidad del carrito:", idProducto, cantidad);
+    const claveCarrito = obtenerClaveCarritoActiva();
+
+    if (!claveCarrito) {
+        console.log("carrito no disponible para este usuario");
+        return false;
+    }
+
+    const productos = obtenerArreglo(claveCarrito);
+    const productoEnCarrito = productos.find(function (producto) {
+        return producto.id === idProducto;
+    });
+
+    if (!productoEnCarrito) {
+        console.log("no se encontro el producto en carrito");
+        return false;
+    }
+
+    if (productoEnCarrito.stock <= 0) {
+        console.log("producto sin stock, se elimina del carrito:", idProducto);
+        eliminarProductoCarrito(idProducto);
+        return true;
+    }
+
+    productoEnCarrito.cantidad = obtenerCantidadNormalizada(productoEnCarrito);
+
+    const cantidadNumerica = Number(cantidad);
+
+    if (Number.isNaN(cantidadNumerica) || cantidadNumerica <= 0) {
+        console.log("cantidad invalida, se elimina del carrito:", idProducto);
+        eliminarProductoCarrito(idProducto);
+        return true;
+    }
+
+    productoEnCarrito.cantidad = Math.min(cantidadNumerica, productoEnCarrito.stock);
+    console.log("cantidad actualizada:", idProducto, productoEnCarrito.cantidad);
+    setearArreglo(claveCarrito, productos);
+    return true;
+}
+
+export function vaciarCarrito() {
+    console.log("vaciar carrito");
+    const claveCarrito = obtenerClaveCarritoActiva();
+
+    if (!claveCarrito) {
+        console.log("carrito no disponible para este usuario");
+        return;
+    }
+
+    setearArreglo(claveCarrito, []);
+}
+
+export function obtenerCantidadTotalCarrito() {
+    console.log("calculando cantidad total del carrito");
+    const productos = obtenerElementosDelCarrito();
+    let total = 0;
+
+    for (let i = 0; i < productos.length; i++) {
+        total += Number(productos[i].cantidad || 1);
+    }
+
+    return total;
+}
+
+export function obtenerTotalCarrito() {
+    console.log("calculando total del carrito");
+    const productos = obtenerElementosDelCarrito();
+    let total = 0;
+
+    for (let i = 0; i < productos.length; i++) {
+        const producto = productos[i];
+        total += Number(producto.precio || 0) * Number(producto.cantidad || 1);
+    }
+
+    return total;
 }
 
 export function agregarProductoHistorial(producto, cantidad) {
-    let productosComprados = obtenerArreglo(clave_productos_comprados_ls)
+    console.log("agregando al historial:", producto.id, cantidad);
+    const claveHistorial = obtenerClaveHistorialActiva();
+
+    if (!claveHistorial) {
+        console.log("historial no disponible para este usuario");
+        return;
+    }
+
+    let productosComprados = obtenerArreglo(claveHistorial)
     let productoComprado = {
         ...producto,
         cantidad: cantidad || 1,
@@ -139,14 +340,23 @@ export function agregarProductoHistorial(producto, cantidad) {
     }
 
     productosComprados.push(productoComprado)
-    setearArreglo(clave_productos_comprados_ls, productosComprados)
+    setearArreglo(claveHistorial, productosComprados)
 }
 
 export function obtenerElementosDelHistorial() {
-    return obtenerArreglo(clave_productos_comprados_ls);
+    console.log("leyendo historial");
+    const claveHistorial = obtenerClaveHistorialActiva();
+
+    if (!claveHistorial) {
+        console.log("historial no disponible para este usuario");
+        return [];
+    }
+
+    return obtenerArreglo(claveHistorial);
 }
 
 export function descontarStockProducto(idProducto, cantidad) {
+    console.log("descontando stock:", idProducto, cantidad);
     let producto = obtenerProductoPorId(idProducto)
 
     if (!producto) {
@@ -179,3 +389,32 @@ function generarID() {
     return `p${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
 }
 
+function obtenerCantidadNormalizada(producto) {
+    const cantidad = Number(producto.cantidad);
+
+    if (Number.isNaN(cantidad) || cantidad <= 0) {
+        return 1;
+    }
+
+    return cantidad;
+}
+
+function obtenerClaveCarritoActiva() {
+    const usuarioActivo = JSON.parse(localStorage.getItem("usuario_activo") || "null");
+
+    if (!usuarioActivo || usuarioActivo.rol !== "cliente") {
+        return null;
+    }
+
+    return `${clave_carrito_base}_${usuarioActivo.id}`;
+}
+
+function obtenerClaveHistorialActiva() {
+    const usuarioActivo = JSON.parse(localStorage.getItem("usuario_activo") || "null");
+
+    if (!usuarioActivo || usuarioActivo.rol !== "cliente") {
+        return null;
+    }
+
+    return `${clave_productos_comprados_base}_${usuarioActivo.id}`;
+}

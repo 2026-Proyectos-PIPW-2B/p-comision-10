@@ -82,18 +82,23 @@ function renderizarProductos() {
         boton.textContent = "agregar";
 
         boton.addEventListener("click", function () {
+            console.log("click en agregar:", producto.id);
 
             const usuarioLogueado = localStorage.getItem("usuario_logueado");
             const usuarioActivo = JSON.parse(localStorage.getItem("usuario_activo") || "null");
-            if (usuarioLogueado !== "false" || usuarioActivo) {
+            if (usuarioLogueado === "true" && usuarioActivo && usuarioActivo.rol === "cliente") {
+                console.log("usuario logueado, agregando producto");
                 const seAgrego = agregarElementoAlCarrito(producto.id);
                 if (seAgrego) {
+                    console.log("producto agregado al carrito:", producto.id);
                     alert(`Se agregó ${producto.nombre} al carrito`);
                 } else {
-                    alert("Ese producto ya está en el carrito");
+                    console.log("no se pudo agregar el producto:", producto.id);
+                    alert("No se pudo agregar más cantidad de este producto");
                 }
             } else {
-                alert("no has iniciado seccion")
+                console.log("carrito solo para clientes");
+                alert("El carrito es solo para clientes");
             }
         });
 
