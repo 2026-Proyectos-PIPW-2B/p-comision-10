@@ -30,3 +30,11 @@ body {
     width: 1em;
     height: 1em;
 }
+
+.form-signin .link-registro {
+    color: var(--bs-body-color);
+}
+
+.form-signin .link-registro:hover {
+    color: var(--bs-emphasis-color);
+}
