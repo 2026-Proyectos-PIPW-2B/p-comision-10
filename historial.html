@@ -16,7 +16,12 @@
                     <img src="imagenes/logo.png" alt="logo.png" width="60" height="60" />
                     <a class="navbar-brand fw-light fs-1" href="index.html">Burguer PIPW</a>
                 </div>
-                <div id="navbarSupportedContent">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0" data-menu></ul>
                 </div>
             </div>
@@ -33,7 +38,7 @@
                         <th scope="col">imagen</th>
                         <th scope="col">fecha</th>
                         <th scope="col">cantidad</th>
-                        <th scope="col">precio total</th>
+                        <th scope="col">total</th>
                     </tr>
                 </thead>
                 <tbody class="table-light" id="tableBodyHistorial"></tbody>
