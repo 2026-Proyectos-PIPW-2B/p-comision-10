@@ -130,19 +130,38 @@ export function eliminarProductoCarrito(idProducto) {
     setearArreglo(clave_productos_carrito_ls, productosFiltrados);
 }
 
-export function agregarProductoHistorial(producto) {
-    let productosComprados = obtenerArreglo(clave_productos_comprados_ls);
+export function agregarProductoHistorial(producto, cantidad) {
+    let productosComprados = obtenerArreglo(clave_productos_comprados_ls)
     let productoComprado = {
         ...producto,
+        cantidad: cantidad || 1,
         fecha: new Date().toLocaleDateString("es-AR"),
-    };
+    }
 
-    productosComprados.push(productoComprado);
-    setearArreglo(clave_productos_comprados_ls, productosComprados);
+    productosComprados.push(productoComprado)
+    setearArreglo(clave_productos_comprados_ls, productosComprados)
 }
 
 export function obtenerElementosDelHistorial() {
     return obtenerArreglo(clave_productos_comprados_ls);
+}
+
+export function descontarStockProducto(idProducto, cantidad) {
+    let producto = obtenerProductoPorId(idProducto)
+
+    if (!producto) {
+        console.log("no se encontro el producto para descontar stock:", idProducto)
+        return
+    }
+
+    producto.stock = producto.stock - cantidad
+
+    if (producto.stock < 0) {
+        producto.stock = 0
+    }
+
+    console.log("descntando stock del prodcto:", idProducto, "cantidad:", cantidad, "stock restante:", producto.stock)
+    editarProducto(producto)
 }
 
 function crearProducto(nombre, descripcion, stock, precio, imagen) {
@@ -159,3 +178,4 @@ function crearProducto(nombre, descripcion, stock, precio, imagen) {
 function generarID() {
     return `p${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
 }
+

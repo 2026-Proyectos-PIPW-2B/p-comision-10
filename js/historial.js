@@ -31,8 +31,8 @@ function mostrarHistorial(producto) {
     img.height = 60
     tdProducto.textContent = producto.nombre
     tdFecha.textContent = producto.fecha || "sin fecha"
-    tdCantidad.textContent = producto.stock
-    tdTotal.textContent = producto.stock * producto.precio
+    tdCantidad.textContent = producto.cantidad || 1
+    tdTotal.textContent = (producto.cantidad || 1) * producto.precio
 
     tdProducto.appendChild(img)
     tr.appendChild(tdProducto)
