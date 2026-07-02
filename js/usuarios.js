@@ -190,7 +190,7 @@ function cargarUsuarioEnFormulario(idUsuario) {
 function limpiarFormularioSiCorresponde(idUsuario) {
     const idEnFormulario = document.getElementById("inputIdUsuario").value;
 
-    if (idEnFormulario === idUsuario) {
+    if (String(idEnFormulario) === String(idUsuario)) {
         const formulario = document.getElementById("formularioEditarUsuario");
         formulario.reset();
         document.getElementById("inputIdUsuario").value = "";
@@ -200,7 +200,7 @@ function limpiarFormularioSiCorresponde(idUsuario) {
 function actualizarUsuarioActivo(usuarioEditado) {
     const usuarioActivo = JSON.parse(localStorage.getItem("usuario_activo") || "null");
 
-    if (usuarioActivo && usuarioActivo.id === usuarioEditado.id) {
+    if (usuarioActivo && String(usuarioActivo.id) === String(usuarioEditado.id)) {
         console.log("actualizando usuario activo");
         localStorage.setItem("usuario_activo", JSON.stringify(usuarioEditado));
         actualizarSesionActiva(usuarioEditado);

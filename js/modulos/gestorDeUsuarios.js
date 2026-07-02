@@ -48,7 +48,7 @@ export function buscarUsuarioPorEmail(email) {
 export function editarUsuario(usuarioEditado) {
     let usuarios = obtenerValor(clave_usuarios_ls);
     let indice = usuarios.findIndex(function (usuario) {
-        return usuario.id === usuarioEditado.id;
+        return String(usuario.id) === String(usuarioEditado.id);
     });
 
     if (indice === -1) {
@@ -67,18 +67,18 @@ export function obtenerUsuarios() {
 export function obtenerUsuarioPorId(idUsuario) {
     let usuarios = obtenerValor(clave_usuarios_ls);
     return usuarios.find(function (usuario) {
-        return usuario.id === idUsuario;
+        return String(usuario.id) === String(idUsuario);
     });
 }
 
 export function eliminarUsuario(idUsuario) {
     let usuarios = obtenerValor(clave_usuarios_ls);
     let usuariosFiltrados = usuarios.filter(function (usuario) {
-        return usuario.id !== idUsuario;
+        return String(usuario.id) !== String(idUsuario);
     });
 
     let usuarioActivo = JSON.parse(localStorage.getItem("usuario_activo") || "null");
-    if (usuarioActivo && usuarioActivo.id === idUsuario) {
+    if (usuarioActivo && String(usuarioActivo.id) === String(idUsuario)) {
         localStorage.removeItem("usuario_activo");
         localStorage.setItem("usuario_logueado", "false");
         localStorage.removeItem("sesion_activa");
@@ -94,7 +94,7 @@ export function existeUsuario(email, idUsuario = null) {
     for (let i = 0; i < usuarios.length; i++) {
         let usuario = usuarios[i];
 
-        if (usuario.email === email && usuario.id !== idUsuario) {
+        if (usuario.email === email && String(usuario.id) !== String(idUsuario)) {
             existe = true;
         }
     }
