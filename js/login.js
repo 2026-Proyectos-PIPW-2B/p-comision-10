@@ -172,21 +172,21 @@ function inicializarUsuarios() {
     const clave_usuarios_ls = "usuarios"
 
     const usuario = [{
-        id: 1,
+        id: "1",
         nombreCompleto: "pablo",
         direccion: "calle 123",
         telefono: 12345678910,
-        email: "hola@gmial.com",
-        password: "hola",
+        email: "admin@gmail.com",
+        password: "1234",
         rol: "admin",
     },
     {
-        id: 2,
+        id: "2",
         nombreCompleto: "juan",
         direccion: "321 calle",
         telefono: 10986754321,
-        email: "soyunemail@gmail.com",
-        password: "chau",
+        email: "cliente@gmail.com",
+        password: "1234",
         rol: "cliente",
     }
     ];
